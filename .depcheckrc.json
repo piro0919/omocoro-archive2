@@ -1,0 +1,11 @@
+{
+  "ignores": [
+    "@commitlint/*",
+    "@types/node",
+    "@types/react-dom",
+    "@uphold/commitlint-config",
+    "commitlint-plugin-tense",
+    "eslint-*",
+    "stylelint-*"
+  ]
+}

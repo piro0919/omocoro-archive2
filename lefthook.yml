@@ -1,0 +1,21 @@
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*"
+      run: npx prettier --ignore-unknown --write {staged_files}
+      stage_fixed: true
+    secretlint:
+      glob: "*"
+      run: npx secretlint {staged_files}
+    stylelint:
+      glob: "**/*.css"
+      run: npx stylelint --fix {staged_files}
+      stage_fixed: true
+    typescript:
+      glob: "*.{ts,tsx}"
+      run: npx tsc --noEmit
+    eslint:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
