@@ -13,7 +13,7 @@
     "@piro0919/next-unused": "0.2.2",
     "@secretlint/secretlint-rule-preset-recommend": "9.0.0",
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "^20",
+    "@types/node": "^22.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@uphold/commitlint-config": "1.1.1",
