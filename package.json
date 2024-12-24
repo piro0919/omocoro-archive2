@@ -1,10 +1,17 @@
 {
   "dependencies": {
+    "@neondatabase/serverless": "0.10.4",
+    "@prisma/client": "6.1.0",
     "@t3-oss/env-nextjs": "0.11.1",
+    "@vercel/postgres": "0.10.0",
+    "cheerio": "1.0.0",
     "next": "15.1.0",
+    "prisma": "6.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "ress": "5.0.2"
+    "ress": "5.0.2",
+    "sleep-promise": "9.1.0",
+    "vercel": "39.2.2"
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.1",
@@ -19,7 +26,9 @@
     "@uphold/commitlint-config": "1.1.1",
     "better-typescript-lib": "2.10.0",
     "commitlint-plugin-tense": "1.0.3",
+    "cross-env": "7.0.3",
     "depcheck": "1.4.7",
+    "dotenv": "16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
     "knip": "5.41.0",
@@ -34,6 +43,7 @@
     "stylelint-high-performance-animation": "1.10.0",
     "stylelint-no-unused-selectors": "1.0.40",
     "stylelint-order": "6.0.4",
+    "tsx": "4.19.2",
     "typescript": "^5"
   },
   "name": "omocoro-archive",
@@ -50,14 +60,24 @@
     "build": "next build",
     "depcheck": "depcheck",
     "dev": "next dev --turbopack",
+    "dev:prod": "cross-env NODE_ENV=production next dev --turbopack",
     "find:unused": "next-unused",
     "knip": "knip",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "lint:style": "stylelint --fix '**/*.css'",
+    "migrate": "npx prisma migrate deploy",
+    "migrate:create": "dotenv -e .env.local -- npx prisma migrate dev",
+    "migrate:dev": "dotenv -e .env.development.local -- npm run migrate",
+    "migrate:prod": "dotenv -e .env.local -- npm run migrate",
     "prettier": "prettier --write .",
+    "seed": "cross-env NODE_ENV=development tsx prisma/seed.ts",
     "start": "next start",
-    "type-check": "tsc --noemit"
+    "studio": "npx prisma studio",
+    "studio:dev": "dotenv -e .env.development.local -- npm run studio",
+    "studio:prod": "dotenv -e .env.local -- npm run studio",
+    "type-check": "tsc --noemit",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "version": "0.1.0"
 }

@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Uses connection pooling
+  url       = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+// 記事モデル
+model Article {
+  id          String    @id @default(cuid())
+  title       String // 記事タイトル
+  url         String    @unique // オリジナルの記事URL
+  thumbnail   String // サムネイル画像URL
+  categoryId  String // カテゴリID
+  publishedAt DateTime? // 公開日時
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  writers  Writer[]
+}
+
+// カテゴリモデル
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique // マンガ、コラム、動画、企画など
+  articles Article[]
+}
+
+// ライターモデル
+model Writer {
+  id         String    @id @default(cuid())
+  name       String    @unique // ライター名
+  profileUrl String // プロフィールページURL
+  avatarUrl  String // アバター画像URL
+  articles   Article[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}

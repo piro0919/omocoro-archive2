@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "ress";
+import Layout from "./_components/Layout";
 
 export const metadata: Metadata = {
   title: "オモコロアーカイブ",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <Layout>{children}</Layout>
+      </body>
     </html>
   );
 }
