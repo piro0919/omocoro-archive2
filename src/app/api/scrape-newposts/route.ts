@@ -1,6 +1,6 @@
 import prismaClient from "@/lib/prismaClient";
 import * as cheerio from "cheerio";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import sleep from "sleep-promise";
 import { type Element } from "domhandler";
 
@@ -211,7 +211,21 @@ async function fetchAndProcessPage(
   return failedArticles;
 }
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  // リクエストヘッダーから認証情報を取得
+  const authHeader = request.headers.get("authorization");
+
+  // 環境変数と比較して検証
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Unauthorized",
+      },
+      { status: 401 },
+    );
+  }
+
   try {
     const writers = await prismaClient.writer.findMany();
     let totalFailedArticles = 0;
