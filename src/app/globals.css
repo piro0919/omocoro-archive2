@@ -7,6 +7,10 @@ html {
   }
 }
 
+body {
+  background: #f6f6f6;
+}
+
 * {
   outline: none;
 }

@@ -1,11 +1,7 @@
-import { JSX, ReactNode } from "react";
+import { JSX, PropsWithChildren } from "react";
 import styles from "./style.module.css";
 
-export type LayoutProps = {
-  children: ReactNode;
-};
-
-export default function Layout({ children }: LayoutProps): JSX.Element {
+export default function Layout({ children }: PropsWithChildren): JSX.Element {
   return (
     <div>
       <header className={styles.header}>

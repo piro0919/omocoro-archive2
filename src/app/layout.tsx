@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "ress";
 import Layout from "./_components/Layout";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Providers } from "./_components/Providers";
 
 export const metadata: Metadata = {
   title: "オモコロアーカイブ",
@@ -16,7 +18,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <Layout>{children}</Layout>
+        <NuqsAdapter>
+          <Providers>
+            <Layout>{children}</Layout>
+          </Providers>
+        </NuqsAdapter>
       </body>
     </html>
   );
