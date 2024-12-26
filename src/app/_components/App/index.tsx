@@ -3,7 +3,6 @@ import { type Article, type Category, type Writer } from "@prisma/client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import Image from "next/image";
-import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
 import { Fragment, type JSX, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
@@ -75,7 +74,7 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
             writers,
           }) => (
             <li className={styles.item} key={id}>
-              <Link href={url} target="_blank">
+              <a href={url} target="_blank">
                 <div className={styles.thumbnail}>
                   <Image
                     style={{
@@ -86,11 +85,11 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
                     src={thumbnail}
                   />
                 </div>
-              </Link>
+              </a>
               <div className={styles.detail}>
-                <Link href={url} target="_blank">
+                <a href={url} target="_blank">
                   <span className={styles.title}>{title}</span>
-                </Link>
+                </a>
                 <div className={styles.meta}>
                   <div>
                     <span

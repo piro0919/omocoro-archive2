@@ -1,5 +1,11 @@
 "use client";
-import { type JSX, type PropsWithChildren, useEffect, useState } from "react";
+import {
+  type JSX,
+  type PropsWithChildren,
+  Suspense,
+  useEffect,
+  useState,
+} from "react";
 import Header from "../Header";
 import MobileNavigation from "../MobileNavigation";
 import styles from "./style.module.css";
@@ -25,7 +31,7 @@ export default function Layout({ children }: PropsWithChildren): JSX.Element {
   }, [lastScrollY]);
 
   return (
-    <>
+    <Suspense fallback={null}>
       <div
         className={`${styles.header} ${!isVisible ? styles.headerHidden : ""}`}
       >
@@ -35,6 +41,6 @@ export default function Layout({ children }: PropsWithChildren): JSX.Element {
       <div className={styles.mobileNavigation}>
         <MobileNavigation />
       </div>
-    </>
+    </Suspense>
   );
 }
