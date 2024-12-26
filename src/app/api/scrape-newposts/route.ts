@@ -1,3 +1,4 @@
+import env from "@/env";
 import prismaClient from "@/lib/prismaClient";
 import * as cheerio from "cheerio";
 import { type Element } from "domhandler";
@@ -220,7 +221,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   if (
     process.env.NODE_ENV !== "development" &&
-    authHeader !== `Bearer ${process.env.CRON_SECRET}`
+    authHeader !== `Bearer ${env.CRON_SECRET}`
   ) {
     return NextResponse.json(
       {

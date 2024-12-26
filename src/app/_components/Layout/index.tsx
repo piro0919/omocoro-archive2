@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import useShowWindowSize from "use-show-window-size";
 import Header from "../Header";
 import MobileNavigation from "../MobileNavigation";
 import styles from "./style.module.css";
@@ -29,6 +30,10 @@ export default function Layout({ children }: PropsWithChildren): JSX.Element {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
+
+  useShowWindowSize({
+    disable: process.env.NODE_ENV === "production",
+  });
 
   return (
     <Suspense fallback={null}>
