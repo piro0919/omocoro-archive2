@@ -1,8 +1,8 @@
 import prismaClient from "@/lib/prismaClient";
 import * as cheerio from "cheerio";
-import { NextRequest, NextResponse } from "next/server";
-import sleep from "sleep-promise";
 import { type Element } from "domhandler";
+import { type NextRequest, NextResponse } from "next/server";
+import sleep from "sleep-promise";
 
 const RETRY_DELAY = 2000;
 const PAGE_DELAY = 1000;
@@ -35,15 +35,18 @@ function extractArticleData(
     const category = article.find(".category").text().trim();
     const publishedAtStr = article.find(".date").text().trim();
 
-    if (!url || !title || !category) {
+    if (!(typeof url === "string" && url.length > 0) || !title || !category) {
       console.log(`Skipping invalid article: ${title || "No title"}`);
+
       return null;
     }
 
     let publishedAt: Date | null = null;
+
     if (publishedAtStr) {
       try {
         publishedAt = new Date(publishedAtStr);
+
         if (isNaN(publishedAt.getTime())) {
           publishedAt = null;
         }
@@ -52,9 +55,10 @@ function extractArticleData(
       }
     }
 
-    return { title, url, thumbnail, category, publishedAt };
+    return { category, publishedAt, thumbnail, title, url };
   } catch (error) {
     console.error("Error extracting article data:", error);
+
     return null;
   }
 }
@@ -76,6 +80,7 @@ async function processWriters(
       if (!name) continue;
 
       const existingWriter = existingWriters.find((w) => w.name === name);
+
       if (existingWriter) {
         writerIds.push(existingWriter.id);
         continue;
@@ -86,10 +91,12 @@ async function processWriters(
 
       try {
         const newWriter = await prismaClient.writer.create({
-          data: { name, avatarUrl, profileUrl },
+          data: { avatarUrl, name, profileUrl },
         });
+
         writerIds.push(newWriter.id);
         existingWriters.push(newWriter);
+        console.log(`New writer created: ${name}`);
       } catch (error) {
         console.error(`Failed to create writer: ${name}`, error);
       }
@@ -114,42 +121,44 @@ async function processArticle(
   }
 
   try {
+    console.log(`Processing: ${articleData.title}`);
+
     const writerIds = await processWriters($, $article, writers);
 
     // カテゴリーの作成と記事の作成/更新を1つのトランザクションで実行
     await prismaClient.$transaction(async (tx) => {
       // カテゴリーの作成または取得
       const category = await tx.category.upsert({
-        where: { name: articleData.category },
         create: { name: articleData.category },
         update: {},
+        where: { name: articleData.category },
       });
 
       // 記事の作成または更新
       await tx.article.upsert({
-        where: { url: articleData.url },
         create: {
+          category: { connect: { id: category.id } },
+          publishedAt: articleData.publishedAt,
+          thumbnail: articleData.thumbnail,
           title: articleData.title,
           url: articleData.url,
-          thumbnail: articleData.thumbnail,
-          publishedAt: articleData.publishedAt,
-          category: { connect: { id: category.id } },
           writers: { connect: writerIds.map((id) => ({ id })) },
         },
         update: {
-          title: articleData.title,
-          thumbnail: articleData.thumbnail,
-          publishedAt: articleData.publishedAt,
           category: { connect: { id: category.id } },
+          publishedAt: articleData.publishedAt,
+          thumbnail: articleData.thumbnail,
+          title: articleData.title,
           writers: { set: writerIds.map((id) => ({ id })) },
         },
+        where: { url: articleData.url },
       });
     });
   } catch (error) {
     console.error("Error processing article:", {
+      error: error instanceof Error ? error.message : "Unknown error",
       title: articleData.title,
       url: articleData.url,
-      error: error instanceof Error ? error.message : "Unknown error",
     });
     throw error;
   }
@@ -163,6 +172,7 @@ async function fetchAndProcessPage(
 
   try {
     const response = await fetch(url);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -174,33 +184,24 @@ async function fetchAndProcessPage(
         ? $(".new-entries .box:not(.ad)")
         : $(".category-inner .box:not(.ad)");
 
-    console.log(`Processing ${url}: ${articleElements.length} articles`);
+    console.log(`Found ${articleElements.length} articles on ${url}`);
 
     for (const articleElement of articleElements) {
-      let succeeded = false;
-
       for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         try {
           await processArticle($, articleElement, writers);
-          succeeded = true;
-          break;
-        } catch (error) {
-          console.log(
-            `Processing failed (attempt ${attempt}/${MAX_RETRIES}): ${
-              error instanceof Error ? error.message : "Unknown error"
-            }`,
-          );
 
+          break;
+        } catch {
           if (attempt === MAX_RETRIES) {
             failedArticles++;
+            console.log(
+              `Failed to process article after ${MAX_RETRIES} attempts`,
+            );
           } else {
             await sleep(RETRY_DELAY);
           }
         }
-      }
-
-      if (!succeeded) {
-        console.error("Failed to process article after all attempts");
       }
     }
   } catch (error) {
@@ -211,16 +212,20 @@ async function fetchAndProcessPage(
   return failedArticles;
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  // リクエストヘッダーから認証情報を取得
+  console.log("Starting scraping process");
+
   const authHeader = request.headers.get("authorization");
 
-  // 環境変数と比較して検証
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (
+    process.env.NODE_ENV !== "development" &&
+    authHeader !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
     return NextResponse.json(
       {
-        success: false,
         error: "Unauthorized",
+        success: false,
       },
       { status: 401 },
     );
@@ -228,9 +233,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   try {
     const writers = await prismaClient.writer.findMany();
+
+    console.log(`Found ${writers.length} existing writers`);
+
     let totalFailedArticles = 0;
 
     // メインページの処理
+    console.log("Processing main page");
     totalFailedArticles += await fetchAndProcessPage(BASE_URL, writers);
     await sleep(PAGE_DELAY);
 
@@ -241,11 +250,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     while (true) {
       try {
         const pageUrl = `${BASE_URL}/newpost/page/${page}`;
+
+        console.log(`Processing page ${page}`);
+
         const pageFailures = await fetchAndProcessPage(pageUrl, writers);
 
         if (pageFailures === 0 && page > 1) {
           consecutiveEmptyPages++;
+
           if (consecutiveEmptyPages >= 2) {
+            console.log("Finished - found 2 consecutive empty pages");
+
             break;
           }
         } else {
@@ -257,23 +272,31 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         await sleep(PAGE_DELAY);
       } catch (error) {
         console.error(`Failed to process page ${page}:`, error);
+
         break;
       }
     }
 
+    console.log(
+      `Scraping completed. Failed articles: ${totalFailedArticles}, Last page: ${page - 1}`,
+    );
+
     return NextResponse.json({
-      success: true,
-      lastProcessedPage: page - 1,
       failedArticles: totalFailedArticles,
+      lastProcessedPage: page - 1,
+      success: true,
     });
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
+
+    console.error("Fatal error:", errorMessage);
+
     return NextResponse.json(
       {
-        success: false,
-        error: errorMessage,
         details: error instanceof Error ? error.stack : undefined,
+        error: errorMessage,
+        success: false,
       },
       { status: 500 },
     );

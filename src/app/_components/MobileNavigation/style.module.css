@@ -1,0 +1,15 @@
+.tabList {
+  background: #fff;
+  border-top: 1px solid #cbd1da;
+  display: flex;
+  height: 60px;
+}
+
+.tab {
+  align-items: center;
+  color: #999;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}

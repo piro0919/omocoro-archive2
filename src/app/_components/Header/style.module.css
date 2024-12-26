@@ -1,0 +1,45 @@
+.header {
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #cbd1da;
+  display: flex;
+  height: 60px;
+}
+
+.inner {
+  align-items: center;
+  color: #999;
+  display: flex;
+  gap: min(16px, 3dvw);
+  margin: 0 auto;
+  padding: 0 min(16px, 3dvw);
+  width: min(100%, 1280px);
+}
+
+.link {
+  aspect-ratio: 1220 / 184;
+  height: min(36px, 7.2dvw);
+  position: relative;
+}
+
+.h1 {
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.search {
+  align-items: center;
+  border: 1px solid #cbd1da;
+  border-radius: 50dvmax;
+  display: flex;
+  gap: 6px;
+  padding: 3px 6px;
+  width: 300px;
+}
+
+.input {
+  font-size: 1.4rem;
+}

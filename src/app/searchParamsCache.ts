@@ -4,6 +4,7 @@ import { createSearchParamsCache, parseAsString } from "nuqs/server";
 const searchParamsCache = createSearchParamsCache({
   // List your search param keys and associated parsers here:
   category: parseAsString.withDefault(""),
+  keyword: parseAsString.withDefault(""),
   writer: parseAsString.withDefault(""),
 });
 

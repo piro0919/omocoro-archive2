@@ -1,8 +1,28 @@
 .header {
-  background: #007db3;
-  display: none;
+  inset: 0 0 auto;
+  position: fixed;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+  z-index: 1;
 }
 
-.h1 {
-  color: #f4121d;
+.headerHidden {
+  transform: translateY(-100%);
+}
+
+.main {
+  padding: 60px 0;
+
+  @media (width >= 740px) {
+    padding-bottom: 0;
+  }
+}
+
+.mobileNavigation {
+  inset: auto 0 0;
+  position: fixed;
+
+  @media (width >= 740px) {
+    display: none;
+  }
 }

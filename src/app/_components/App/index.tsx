@@ -1,15 +1,14 @@
 "use client";
-
-import { Article, Category, Writer } from "@prisma/client";
-import { Fragment, JSX, useEffect, useMemo } from "react";
-import styles from "./style.module.css";
-import Link from "next/link";
+import { type Article, type Category, type Writer } from "@prisma/client";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
+import { parseAsString, useQueryState } from "nuqs";
+import { Fragment, type JSX, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { fetchArticles } from "./actions";
-import { format } from "date-fns";
-import { useQueryState, parseAsString } from "nuqs";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import styles from "./style.module.css";
 
 export type AppProps = {
   initialArticles: (Article & { category: Category; writers: Writer[] })[];
@@ -22,6 +21,7 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
       .withDefault("")
       .withOptions({ history: "push", scroll: true, shallow: true }),
   );
+  const [keyword] = useQueryState("keyword", parseAsString.withDefault(""));
   const [writer, setWriter] = useQueryState(
     "writer",
     parseAsString
@@ -31,27 +31,29 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
   const searchParamsObject = useMemo(
     () => ({
       category,
+      keyword,
       writer,
     }),
-    [category, writer],
+    [category, keyword, writer],
   );
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["articles", searchParamsObject],
-      queryFn: ({ pageParam }) =>
-        fetchArticles({ category, page: pageParam, writer }),
-      initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) =>
         lastPage.length === 0 ? undefined : allPages.length,
       initialData: {
-        pages: [initialArticles],
         pageParams: [0],
+        pages: [initialArticles],
       },
+      initialPageParam: 0,
+      queryFn: async ({ pageParam }) =>
+        fetchArticles({ category, keyword, page: pageParam, writer }),
+      queryKey: ["articles", searchParamsObject],
     });
-  const { ref, inView } = useInView({
+  const { inView, ref } = useInView({
     rootMargin: "100px 0px",
     threshold: 0.1,
   });
+  const allArticles = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -59,31 +61,29 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const allArticles = data?.pages.flat() ?? [];
-
   return (
-    <>
+    <div className={styles.wrapper}>
       <ul className={styles.list}>
         {allArticles.map(
           ({
             category: { name: categoryName },
-            publishedAt,
             id,
+            publishedAt,
+            thumbnail,
             title,
             url,
-            thumbnail,
             writers,
           }) => (
             <li className={styles.item} key={id}>
               <Link href={url} target="_blank">
                 <div className={styles.thumbnail}>
                   <Image
-                    alt={title}
-                    src={thumbnail}
-                    fill={true}
                     style={{
                       objectFit: "cover",
                     }}
+                    alt={title}
+                    fill={true}
+                    src={thumbnail}
                   />
                 </div>
               </Link>
@@ -93,7 +93,11 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
                 </Link>
                 <div className={styles.meta}>
                   <div>
-                    <span onClick={() => setCategory(categoryName)}>
+                    <span
+                      onClick={() => {
+                        setCategory(categoryName);
+                      }}
+                    >
                       {categoryName}
                     </span>
                     {publishedAt && (
@@ -104,10 +108,16 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
                     )}
                   </div>
                   <div>
-                    {writers.map(({ name, id }, index) => (
+                    {writers.map(({ id, name }, index) => (
                       <Fragment key={id}>
                         {index > 0 && "・"}
-                        <span onClick={() => setWriter(name)}>{name}</span>
+                        <span
+                          onClick={() => {
+                            setWriter(name);
+                          }}
+                        >
+                          {name}
+                        </span>
                       </Fragment>
                     ))}
                   </div>
@@ -118,9 +128,9 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
         )}
       </ul>
       <div ref={ref}>
-        {hasNextPage && isFetchingNextPage ? <div>Loading...</div> : null}
-        {!hasNextPage ? <div>すべての記事を読み込みました</div> : null}
+        {hasNextPage && isFetchingNextPage ? <p>Loading...</p> : null}
+        {!hasNextPage ? <p>すべての記事を読み込みました</p> : null}
       </div>
-    </>
+    </div>
   );
 }
