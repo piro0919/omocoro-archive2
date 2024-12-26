@@ -8,7 +8,7 @@ import Providers from "./_components/Providers";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const notoSansJP = NotoSansJP();
+const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";
 const APP_DEFAULT_TITLE = "オモコロアーカイブ";
 const APP_TITLE_TEMPLATE = "%s";

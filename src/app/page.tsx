@@ -7,8 +7,8 @@ import searchParamsCache from "./searchParamsCache";
 
 export const dynamic = "auto";
 
-// 24 時間
-export const revalidate = 86400;
+// 12 時間
+export const revalidate = 43200;
 
 type PageProps = {
   searchParams: Promise<SearchParams>; // Next.js 15+: async searchParams prop
