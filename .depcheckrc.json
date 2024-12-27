@@ -1,11 +1,15 @@
 {
   "ignores": [
     "@commitlint/*",
+    "@neondatabase/serverless",
     "@types/node",
     "@types/react-dom",
     "@uphold/commitlint-config",
+    "@vercel/postgres",
+    "better-typescript-lib",
     "commitlint-plugin-tense",
     "eslint-*",
+    "lefthook",
     "stylelint-*"
   ]
 }
