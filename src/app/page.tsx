@@ -2,7 +2,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { type SearchParams } from "nuqs/server";
 import { type JSX } from "react";
 import App from "./_components/App";
-import { fetchArticles } from "./_components/App/actions";
+import { fetchArticles, fetchArticlesCount } from "./_components/App/actions";
 import searchParamsCache from "./searchParamsCache";
 
 export const dynamic = "auto";
@@ -30,6 +30,16 @@ export default async function Page({
     page: 0,
     writer,
   });
+  const initialArticlesCount = await fetchArticlesCount({
+    category,
+    keyword,
+    writer,
+  });
 
-  return <App initialArticles={initialArticles} />;
+  return (
+    <App
+      initialArticles={initialArticles}
+      initialArticlesCount={initialArticlesCount}
+    />
+  );
 }

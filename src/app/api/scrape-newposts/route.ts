@@ -11,18 +11,18 @@ const MAX_RETRIES = 5;
 const BASE_URL = "https://omocoro.jp";
 
 type Writer = {
+  avatarUrl?: string;
   id: string;
   name: string;
-  avatarUrl?: string;
   profileUrl?: string;
 };
 
 type ArticleInput = {
+  category: string;
+  publishedAt: Date | null;
+  thumbnail: string;
   title: string;
   url: string;
-  thumbnail: string;
-  publishedAt: Date | null;
-  category: string;
 };
 
 function extractArticleData(

@@ -4,7 +4,6 @@ import { type JSX, type ReactNode } from "react";
 import Layout from "./_components/Layout";
 import "react-tabs/style/react-tabs.css";
 import "ress";
-import Providers from "./_components/Providers";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -58,9 +57,7 @@ export default function RootLayout({
     <html lang="ja">
       <body className={notoSansJP.className}>
         <NuqsAdapter>
-          <Providers>
-            <Layout>{children}</Layout>
-          </Providers>
+          <Layout>{children}</Layout>
         </NuqsAdapter>
       </body>
     </html>

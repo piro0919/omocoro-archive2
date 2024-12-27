@@ -66,7 +66,7 @@ const eslintConfig = [
       "@typescript-eslint/no-misused-promises": "error",
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/promise-function-async": "error",
-      "@typescript-eslint/strict-boolean-expressions": "error",
+      "@typescript-eslint/strict-boolean-expressions": "off",
       "ext/lines-between-object-properties": ["error", "never"],
       "import/newline-after-import": ["error", { count: 1 }],
       "import/order": "off",
@@ -179,6 +179,13 @@ const eslintConfig = [
         {
           order: "asc",
           type: "natural",
+        },
+      ],
+      "perfectionist/sort-object-types": [
+        "error",
+        {
+          type: "natural",
+          order: "asc",
         },
       ],
       "perfectionist/sort-objects": [

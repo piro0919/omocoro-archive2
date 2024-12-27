@@ -1,31 +1,38 @@
 "use client";
 import { type Article, type Category, type Writer } from "@prisma/client";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import Image from "next/image";
 import { parseAsString, useQueryState } from "nuqs";
 import { Fragment, type JSX, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
-import { fetchArticles } from "./actions";
+import { TailSpin } from "react-loader-spinner";
+import useSWR from "swr";
+import { type StrictTupleKey } from "swr/_internal";
+import useSWRInfinite from "swr/infinite";
+import { fetchArticles, fetchArticlesCount } from "./actions";
 import styles from "./style.module.css";
 
 export type AppProps = {
   initialArticles: (Article & { category: Category; writers: Writer[] })[];
+  initialArticlesCount: number;
 };
 
-export default function App({ initialArticles }: AppProps): JSX.Element {
+export default function App({
+  initialArticles,
+  initialArticlesCount,
+}: AppProps): JSX.Element {
   const [category, setCategory] = useQueryState(
     "category",
     parseAsString
       .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: true }),
+      .withOptions({ history: "push", scroll: true, shallow: false }),
   );
   const [keyword] = useQueryState("keyword", parseAsString.withDefault(""));
   const [writer, setWriter] = useQueryState(
     "writer",
     parseAsString
       .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: true }),
+      .withOptions({ history: "push", scroll: true, shallow: false }),
   );
   const searchParamsObject = useMemo(
     () => ({
@@ -35,33 +42,52 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
     }),
     [category, keyword, writer],
   );
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      getNextPageParam: (lastPage, allPages) =>
-        lastPage.length === 0 ? undefined : allPages.length,
-      initialData: {
-        pageParams: [0],
-        pages: [initialArticles],
-      },
-      initialPageParam: 0,
-      queryFn: async ({ pageParam }) =>
-        fetchArticles({ category, keyword, page: pageParam, writer }),
-      queryKey: ["articles", searchParamsObject],
-    });
+  const { data: articlesCount = initialArticlesCount } = useSWR(
+    ["articlesCount", searchParamsObject],
+    async () => fetchArticlesCount({ category, keyword, writer }),
+    {
+      fallbackData: initialArticlesCount,
+      revalidateOnFocus: false,
+    },
+  );
+  const getKey = (
+    pageIndex: number,
+    previousPageData: (Article & { category: Category; writers: Writer[] })[],
+  ): StrictTupleKey => {
+    if (previousPageData && !previousPageData.length) return null;
+
+    return ["articles", searchParamsObject, pageIndex];
+  };
+  const { data, isValidating, setSize, size } = useSWRInfinite(
+    getKey,
+    async ([, , pageIndex]) =>
+      fetchArticles({ category, keyword, page: pageIndex as number, writer }),
+    {
+      fallbackData: [initialArticles],
+      revalidateOnFocus: false,
+    },
+  );
+  const articles = useMemo(() => data ?? [], [data]);
+  const isLoadingMore = isValidating && size > 1;
+  const isEmpty = data?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (data && data[data.length - 1]?.length === 0);
+  const hasNextPage = !isReachingEnd;
   const { inView, ref } = useInView({
     rootMargin: "100px 0px",
     threshold: 0.1,
   });
-  const allArticles = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
+  const allArticles = useMemo(() => articles.flat(), [articles]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+    if (inView && hasNextPage && !isLoadingMore) {
+      setSize(size + 1);
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, isLoadingMore, setSize, size]);
 
   return (
     <div className={styles.wrapper}>
+      <p className={styles.count}>{`${articlesCount.toLocaleString()}件`}</p>
       <ul className={styles.list}>
         {allArticles.map(
           ({
@@ -96,6 +122,7 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
                       onClick={() => {
                         setCategory(categoryName);
                       }}
+                      className={styles.category}
                     >
                       {categoryName}
                     </span>
@@ -114,6 +141,7 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
                           onClick={() => {
                             setWriter(name);
                           }}
+                          className={styles.writer}
                         >
                           {name}
                         </span>
@@ -126,9 +154,13 @@ export default function App({ initialArticles }: AppProps): JSX.Element {
           ),
         )}
       </ul>
-      <div ref={ref}>
-        {hasNextPage && isFetchingNextPage ? <p>Loading...</p> : null}
-        {!hasNextPage ? <p>すべての記事を読み込みました</p> : null}
+      <div className={styles.loading} ref={ref}>
+        {hasNextPage && isLoadingMore ? (
+          <TailSpin height={45} radius="1" visible={true} width={45} />
+        ) : null}
+        {!hasNextPage ? (
+          <p className={styles.completed}>すべての記事を読み込みました</p>
+        ) : null}
       </div>
     </div>
   );

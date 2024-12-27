@@ -10,9 +10,9 @@
   align-items: center;
   color: #999;
   display: flex;
-  gap: min(16px, 3dvw);
+  gap: min(12px, 2dvw);
   margin: 0 auto;
-  padding: 0 min(16px, 3dvw);
+  padding: 0 min(12px, 2dvw);
   width: min(100%, 1280px);
 }
 

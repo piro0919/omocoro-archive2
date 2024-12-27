@@ -12,7 +12,7 @@ export default function Header(): JSX.Element {
     "keyword",
     parseAsString
       .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: true }),
+      .withOptions({ history: "push", scroll: true, shallow: false }),
   );
   const { handleSubmit, register } = useForm({
     defaultValues: {
