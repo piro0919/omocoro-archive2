@@ -20,7 +20,7 @@ export default async function Page({
   const { category, keyword, order, writer } =
     await searchParamsCache.parse(searchParams);
 
-  if (category || keyword || writer) {
+  if (keyword) {
     noStore();
   }
 

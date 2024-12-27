@@ -4,6 +4,7 @@
   border-bottom: 1px solid #cbd1da;
   display: flex;
   height: 60px;
+  position: relative;
 }
 
 .inner {
@@ -20,6 +21,11 @@
   aspect-ratio: 1220 / 184;
   height: min(36px, 7.2dvw);
   position: relative;
+}
+
+.link2 {
+  display: block;
+  height: 100%;
 }
 
 .h1 {
@@ -44,8 +50,10 @@
   }
 }
 
-.input {
+.input,
+.input2 {
   font-size: 1.4rem;
+  width: 100%;
 }
 
 .searchButton {
@@ -63,4 +71,32 @@
 .menuText {
   font-size: 1.4rem;
   padding: 0 0 0 6px;
+}
+
+.inner2 {
+  align-items: center;
+  background: #fff;
+  color: #999;
+  display: flex;
+  gap: min(12px, 2dvw);
+  inset: 0;
+  margin: 0 auto;
+  padding: 0 min(12px, 2dvw);
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 250ms;
+}
+
+.inner2.show {
+  transform: translateY(0);
+}
+
+.form2 {
+  align-items: center;
+  border: 1px solid #cbd1da;
+  border-radius: 50dvmax;
+  display: flex;
+  gap: 6px;
+  padding: 3px 6px;
+  width: 100%;
 }

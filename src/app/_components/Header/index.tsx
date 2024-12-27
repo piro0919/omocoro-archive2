@@ -1,5 +1,6 @@
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import {
+  IconArrowLeft,
   IconCalendarDown,
   IconCalendarUp,
   IconCategory,
@@ -8,13 +9,15 @@ import {
   IconSearch,
   IconUserCircle,
 } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
-import { type JSX, useEffect } from "react";
+import { type JSX, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Spacer from "react-spacer";
+import { useBoolean, useOnClickOutside } from "usehooks-ts";
 import styles from "./style.module.css";
 
 export default function Header(): JSX.Element {
@@ -36,6 +39,16 @@ export default function Header(): JSX.Element {
       .withDefault("desc")
       .withOptions({ history: "push", scroll: true, shallow: false }),
   );
+  const {
+    setFalse: offIsShowSearch,
+    setTrue: onIsShowSearch,
+    value: isShowSearch,
+  } = useBoolean(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  // @ts-expect-error: useOnClickOutside does not support ref type
+  useOnClickOutside(ref, offIsShowSearch);
 
   useEffect(() => {
     setValue("keyword", keyword);
@@ -44,12 +57,27 @@ export default function Header(): JSX.Element {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <Link className={styles.link} href="/">
-          <h1 className={styles.h1}>オモコロアーカイブ</h1>
-          <Image alt="オモコロアーカイブ" fill={true} src="/logo.png" />
-        </Link>
+        <motion.div
+          animate={{
+            scale: 1,
+          }}
+          initial={{
+            scale: 0,
+          }}
+          transition={{
+            delay: 0.25,
+            duration: 0.25,
+            ease: "backOut",
+          }}
+          className={styles.link}
+        >
+          <Link className={styles.link2} href="/">
+            <h1 className={styles.h1}>オモコロアーカイブ</h1>
+            <Image alt="オモコロアーカイブ" fill={true} src="/logo.png" />
+          </Link>
+        </motion.div>
         <Spacer grow={1} />
-        {pathname === "/" ? (
+        {pathname === "/" && !isShowSearch ? (
           <>
             <form
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -65,7 +93,10 @@ export default function Header(): JSX.Element {
                 placeholder="記事を検索"
               />
             </form>
-            <button className={styles.searchButton}>
+            <button
+              className={styles.searchButton}
+              onClick={() => onIsShowSearch()}
+            >
               <IconSearch size={24} />
             </button>
             {order === "desc" ? (
@@ -98,19 +129,43 @@ export default function Header(): JSX.Element {
           direction="bottom"
           transition={true}
         >
-          <MenuItem href="/writer">
+          <MenuItem onClick={() => router.push("/writer")}>
             <IconPencil size={24} />
             <span className={styles.menuText}>ライター</span>
           </MenuItem>
-          <MenuItem href="/category">
+          <MenuItem onClick={() => router.push("/category")}>
             <IconCategory size={24} />
             <span className={styles.menuText}>カテゴリー</span>
           </MenuItem>
-          <MenuItem href="/mypage">
+          <MenuItem onClick={() => router.push("/mypage")}>
             <IconUserCircle size={24} />
             <span className={styles.menuText}>マイページ</span>
           </MenuItem>
         </Menu>
+      </div>
+      <div
+        className={`${styles.inner2} ${isShowSearch ? styles.show : ""}`}
+        ref={ref}
+      >
+        <button onClick={() => offIsShowSearch()}>
+          <IconArrowLeft size={24} />
+        </button>
+        {isShowSearch ? (
+          <form
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={handleSubmit(({ keyword }) => {
+              setKeyword(keyword.replace(/\s+/g, " ").trim());
+            })}
+            className={styles.form2}
+          >
+            <IconSearch size={24} />
+            <input
+              {...register("keyword")}
+              className={styles.input2}
+              placeholder="記事を検索"
+            />
+          </form>
+        ) : null}
       </div>
     </header>
   );
