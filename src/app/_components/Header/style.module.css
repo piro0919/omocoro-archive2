@@ -30,7 +30,7 @@
   width: 1px;
 }
 
-.search {
+.form {
   align-items: center;
   border: 1px solid #cbd1da;
   border-radius: 50dvmax;
@@ -38,8 +38,17 @@
   gap: 6px;
   padding: 3px 6px;
   width: 300px;
+
+  @media (width < 740px) {
+    display: none;
+  }
 }
 
 .input {
   font-size: 1.4rem;
+}
+
+.menu {
+  font-size: 1.4rem;
+  padding: 0 0 0 6px;
 }

@@ -1,0 +1,16 @@
+.footer {
+  background: #fff;
+  border-top: 1px solid #cbd1da;
+  height: 60px;
+}
+
+.inner {
+  align-items: center;
+  color: #999;
+  display: flex;
+  font-size: 1.2rem;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 min(12px, 2dvw);
+  width: min(100%, 1280px);
+}

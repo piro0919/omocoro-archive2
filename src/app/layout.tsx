@@ -6,6 +6,8 @@ import "react-tabs/style/react-tabs.css";
 import "ress";
 import type { Metadata } from "next";
 import "./globals.css";
+import "@szhsin/react-menu/dist/index.css";
+import "@szhsin/react-menu/dist/transitions/zoom.css";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";

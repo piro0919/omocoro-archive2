@@ -6,6 +6,23 @@
   width: min(100%, 1280px);
 }
 
+.texts {
+  align-items: center;
+  display: flex;
+  gap: min(12px, 2dvw);
+}
+
+.badge {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #cbd1da;
+  color: #999;
+  display: flex;
+  font-size: 1.1rem;
+  gap: 3px;
+  padding: 3px 3px 3px 9px;
+}
+
 .count {
   font-size: 1.4rem;
 }
@@ -37,7 +54,7 @@
 .detail {
   display: grid;
   gap: calc(min(12px, 2dvw) / 3);
-  padding: calc(min(12px, 2dvw) / 2) calc(min(12px, 2dvw) / 2);
+  padding: calc(min(12px, 2dvw) / 2);
 }
 
 .title {

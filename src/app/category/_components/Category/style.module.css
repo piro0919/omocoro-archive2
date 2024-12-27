@@ -1,0 +1,24 @@
+.wrapper {
+  margin: 0 auto;
+  padding: min(12px, 2dvw);
+  width: min(100%, 1280px);
+}
+
+.list {
+  display: grid;
+  gap: min(12px, 2dvw);
+  grid-template: auto / repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.link {
+  background: #fff;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 12px;
+}
+
+.name {
+  font-size: 1.4rem;
+  line-height: 1.25;
+}

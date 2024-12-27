@@ -2,7 +2,7 @@ import {
   IconCategory,
   IconHome,
   IconPencil,
-  IconSettings,
+  IconUserCircle,
 } from "@tabler/icons-react";
 import { usePathname, useRouter } from "next/navigation";
 import { type JSX, type ReactNode, useMemo } from "react";
@@ -22,19 +22,19 @@ const TAB_ITEMS = [
     path: "/",
   },
   {
-    icon: <IconCategory size={24} />,
-    label: "カテゴリー",
-    path: "/category",
-  },
-  {
     icon: <IconPencil size={24} />,
     label: "ライター",
     path: "/writer",
   },
   {
-    icon: <IconSettings size={24} />,
-    label: "設定",
-    path: "/setting",
+    icon: <IconCategory size={24} />,
+    label: "カテゴリー",
+    path: "/category",
+  },
+  {
+    icon: <IconUserCircle size={24} />,
+    label: "マイページ",
+    path: "/mypage",
   },
 ] as const;
 

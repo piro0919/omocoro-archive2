@@ -14,7 +14,14 @@
   padding: 60px 0;
 
   @media (width >= 740px) {
+    min-height: calc(100dvh - 60px);
     padding-bottom: 0;
+  }
+}
+
+.footer {
+  @media (width < 740px) {
+    display: none;
   }
 }
 

@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import useShowWindowSize from "use-show-window-size";
+import Footer from "../Footer";
 import Header from "../Header";
 import MobileNavigation from "../MobileNavigation";
 import styles from "./style.module.css";
@@ -43,6 +44,9 @@ export default function Layout({ children }: PropsWithChildren): JSX.Element {
         <Header />
       </div>
       <main className={styles.main}>{children}</main>
+      <div className={styles.footer}>
+        <Footer />
+      </div>
       <div className={styles.mobileNavigation}>
         <MobileNavigation />
       </div>

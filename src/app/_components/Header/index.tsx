@@ -1,8 +1,16 @@
-import { IconAdjustmentsHorizontal, IconSearch } from "@tabler/icons-react";
+import { Menu, MenuItem } from "@szhsin/react-menu";
+import {
+  IconAdjustmentsHorizontal,
+  IconCategory,
+  IconGridDots,
+  IconPencil,
+  IconSearch,
+  IconUserCircle,
+} from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
-import { type JSX } from "react";
+import { type JSX, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Spacer from "react-spacer";
 import styles from "./style.module.css";
@@ -14,11 +22,15 @@ export default function Header(): JSX.Element {
       .withDefault("")
       .withOptions({ history: "push", scroll: true, shallow: false }),
   );
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, setValue } = useForm({
     defaultValues: {
       keyword,
     },
   });
+
+  useEffect(() => {
+    setValue("keyword", keyword);
+  }, [keyword, setValue]);
 
   return (
     <header className={styles.header}>
@@ -33,17 +45,40 @@ export default function Header(): JSX.Element {
           onSubmit={handleSubmit(({ keyword }) => {
             setKeyword(keyword.replace(/\s+/g, " ").trim());
           })}
+          className={styles.form}
         >
-          <div className={styles.search}>
-            <IconSearch size={24} />
-            <input
-              {...register("keyword")}
-              className={styles.input}
-              placeholder="記事を検索"
-            />
-          </div>
+          <IconSearch size={24} />
+          <input
+            {...register("keyword")}
+            className={styles.input}
+            placeholder="記事を検索"
+          />
         </form>
         <IconAdjustmentsHorizontal size={24} />
+        <Menu
+          menuButton={
+            <button>
+              <IconGridDots size={24} />
+            </button>
+          }
+          align="end"
+          arrow={true}
+          direction="bottom"
+          transition={true}
+        >
+          <MenuItem href="/writer">
+            <IconPencil size={24} />
+            <span className={styles.menu}>ライター</span>
+          </MenuItem>
+          <MenuItem href="/category">
+            <IconCategory size={24} />
+            <span className={styles.menu}>カテゴリー</span>
+          </MenuItem>
+          <MenuItem href="/mypage">
+            <IconUserCircle size={24} />
+            <span className={styles.menu}>マイページ</span>
+          </MenuItem>
+        </Menu>
       </div>
     </header>
   );

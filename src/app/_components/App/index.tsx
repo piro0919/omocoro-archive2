@@ -1,5 +1,6 @@
 "use client";
 import { type Article, type Category, type Writer } from "@prisma/client";
+import { IconCircleXFilled } from "@tabler/icons-react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { parseAsString, useQueryState } from "nuqs";
@@ -27,7 +28,10 @@ export default function App({
       .withDefault("")
       .withOptions({ history: "push", scroll: true, shallow: false }),
   );
-  const [keyword] = useQueryState("keyword", parseAsString.withDefault(""));
+  const [keyword, setKeyword] = useQueryState(
+    "keyword",
+    parseAsString.withDefault(""),
+  );
   const [writer, setWriter] = useQueryState(
     "writer",
     parseAsString
@@ -64,6 +68,8 @@ export default function App({
       fetchArticles({ category, keyword, page: pageIndex as number, writer }),
     {
       fallbackData: [initialArticles],
+      revalidateAll: false,
+      revalidateFirstPage: true,
       revalidateOnFocus: false,
     },
   );
@@ -87,7 +93,50 @@ export default function App({
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.count}>{`${articlesCount.toLocaleString()}件`}</p>
+      <div className={styles.texts}>
+        <p className={styles.count}>{`${articlesCount.toLocaleString()}件`}</p>
+        {category ? (
+          <button
+            onClick={() => {
+              setCategory("");
+            }}
+            className={styles.badge}
+          >
+            <span>{category}</span>
+            <IconCircleXFilled size={18} />
+          </button>
+        ) : null}
+        {writer ? (
+          <button
+            onClick={() => {
+              setWriter("");
+            }}
+            className={styles.badge}
+          >
+            <span>{writer}</span>
+            <IconCircleXFilled size={18} />
+          </button>
+        ) : null}
+        {keyword
+          ? keyword.split(" ").map((v, index) => (
+              <button
+                onClick={() => {
+                  setKeyword(
+                    keyword
+                      .split(" ")
+                      .filter((w) => v !== w)
+                      .join(" "),
+                  );
+                }}
+                className={styles.badge}
+                key={index}
+              >
+                <span>{v}</span>
+                <IconCircleXFilled size={18} />
+              </button>
+            ))
+          : null}
+      </div>
       <ul className={styles.list}>
         {allArticles.map(
           ({
