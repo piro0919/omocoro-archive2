@@ -1,5 +1,6 @@
 "use client";
 import { type Article, type Category, type Writer } from "@prisma/client";
+import usePrevious from "@react-hook/previous";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { format } from "date-fns";
 import Image from "next/image";
@@ -10,6 +11,7 @@ import { TailSpin } from "react-loader-spinner";
 import useSWR from "swr";
 import { type StrictTupleKey } from "swr/_internal";
 import useSWRInfinite from "swr/infinite";
+import { useBoolean } from "usehooks-ts";
 import { fetchArticles, fetchArticlesCount } from "./actions";
 import styles from "./style.module.css";
 
@@ -55,6 +57,7 @@ export default function App({
     ["articlesCount", searchParamsObject],
     async () => fetchArticlesCount({ category, keyword, writer }),
     {
+      dedupingInterval: 2000,
       fallbackData: initialArticlesCount,
       revalidateOnFocus: false,
     },
@@ -78,6 +81,7 @@ export default function App({
         writer,
       }),
     {
+      dedupingInterval: 2000,
       fallbackData: [initialArticles],
       revalidateAll: false,
       revalidateFirstPage: true,
@@ -101,6 +105,12 @@ export default function App({
     threshold: 0.1,
   });
   const allArticles = useMemo(() => articles.flat(), [articles]);
+  const prevAllArticles = usePrevious(allArticles);
+  const {
+    setFalse: offIsLoading,
+    setTrue: onIsLoading,
+    value: isLoading,
+  } = useBoolean(true);
 
   useEffect(() => {
     if (inView && hasNextPage && !isLoadingMore) {
@@ -108,9 +118,25 @@ export default function App({
     }
   }, [inView, hasNextPage, isLoadingMore, setSize, size]);
 
+  useEffect(() => {
+    if (
+      JSON.stringify(allArticles.map(({ id }) => id)) ===
+      JSON.stringify(prevAllArticles?.map(({ id }) => id))
+    ) {
+      setTimeout(() => offIsLoading(), 1000);
+
+      return;
+    }
+
+    onIsLoading();
+  }, [allArticles, offIsLoading, onIsLoading, prevAllArticles]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.texts}>
+        {isLoading ? (
+          <TailSpin height={24} radius="1" visible={true} width={24} />
+        ) : null}
         <p className={styles.count}>{`${articlesCount.toLocaleString()}件`}</p>
         {category ? (
           <button
@@ -173,7 +199,9 @@ export default function App({
                       objectFit: "cover",
                     }}
                     alt={title}
+                    decoding="async"
                     fill={true}
+                    loading="lazy"
                     src={thumbnail}
                   />
                 </div>

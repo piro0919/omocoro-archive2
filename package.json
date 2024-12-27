@@ -2,6 +2,7 @@
   "dependencies": {
     "@neondatabase/serverless": "0.10.4",
     "@prisma/client": "6.1.0",
+    "@react-hook/previous": "1.0.1",
     "@serwist/next": "9.0.11",
     "@szhsin/react-menu": "4.2.3",
     "@t3-oss/env-nextjs": "0.11.1",

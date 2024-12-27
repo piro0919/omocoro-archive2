@@ -15,7 +15,14 @@ export default function Writer({ writers }: WriterProps): JSX.Element {
         {writers.map(({ avatarUrl, id, name }) => (
           <li key={id}>
             <Link className={styles.link} href={`/?writer=${name}`}>
-              <Image alt={name} height={45} src={avatarUrl} width={45} />
+              <Image
+                alt={name}
+                decoding="async"
+                height={45}
+                loading="lazy"
+                src={avatarUrl}
+                width={45}
+              />
               <span className={styles.name}>{name}</span>
             </Link>
           </li>

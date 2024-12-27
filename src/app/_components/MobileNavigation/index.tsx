@@ -45,8 +45,13 @@ function NavTab({
   item: TabItem;
   onClick: () => void;
 }): JSX.Element {
+  const pathname = usePathname();
+
   return (
-    <Tab className={styles.tab} onClick={onClick}>
+    <Tab
+      className={`${styles.tab} ${item.path === pathname ? styles.active : ""}`}
+      onClick={onClick}
+    >
       {item.icon}
       <span>{item.label}</span>
     </Tab>

@@ -13,3 +13,7 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.active {
+  color: #bdc3c7;
+}
