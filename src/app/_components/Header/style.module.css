@@ -48,7 +48,19 @@
   font-size: 1.4rem;
 }
 
-.menu {
+.searchButton {
+  @media (width >= 740px) {
+    display: none;
+  }
+}
+
+.menuButton {
+  @media (width < 740px) {
+    display: none;
+  }
+}
+
+.menuText {
   font-size: 1.4rem;
   padding: 0 0 0 6px;
 }

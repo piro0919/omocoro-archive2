@@ -28,9 +28,10 @@ model Article {
 
 // カテゴリモデル
 model Category {
-  id       String    @id @default(cuid())
-  name     String    @unique // マンガ、コラム、動画、企画など
-  articles Article[]
+  id        String    @id @default(cuid())
+  name      String    @unique // マンガ、コラム、動画、企画など
+  articles  Article[]
+  isOnigiri Boolean   @default(false)
 }
 
 // ライターモデル

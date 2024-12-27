@@ -54,10 +54,15 @@ export default function Header(): JSX.Element {
             placeholder="記事を検索"
           />
         </form>
-        <IconAdjustmentsHorizontal size={24} />
+        <button className={styles.searchButton}>
+          <IconSearch size={24} />
+        </button>
+        <Link href="/search">
+          <IconAdjustmentsHorizontal size={24} />
+        </Link>
         <Menu
           menuButton={
-            <button>
+            <button className={styles.menuButton}>
               <IconGridDots size={24} />
             </button>
           }
@@ -68,15 +73,15 @@ export default function Header(): JSX.Element {
         >
           <MenuItem href="/writer">
             <IconPencil size={24} />
-            <span className={styles.menu}>ライター</span>
+            <span className={styles.menuText}>ライター</span>
           </MenuItem>
           <MenuItem href="/category">
             <IconCategory size={24} />
-            <span className={styles.menu}>カテゴリー</span>
+            <span className={styles.menuText}>カテゴリー</span>
           </MenuItem>
           <MenuItem href="/mypage">
             <IconUserCircle size={24} />
-            <span className={styles.menu}>マイページ</span>
+            <span className={styles.menuText}>マイページ</span>
           </MenuItem>
         </Menu>
       </div>

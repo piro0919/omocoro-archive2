@@ -6,12 +6,10 @@ import sleep from "sleep-promise";
 
 dotenv.config({ path: ".env.development.local" });
 
-// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 if (!process.env.POSTGRES_PRISMA_URL) {
   throw new Error("POSTGRES_PRISMA_URL is not set in .env.development.local");
 }
 
-// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 if (!process.env.VERCEL_POSTGRES_URL) {
   throw new Error("VERCEL_POSTGRES_URL is not set in .env.development.local");
 }
@@ -189,7 +187,6 @@ async function migrateWriters() {
         id: "asc" as const,
       },
       take: BATCH_SIZE,
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       ...(lastId && {
         cursor: { id: lastId },
         skip: 1,
@@ -266,7 +263,6 @@ async function migrateArticles(
 ) {
   console.log("\n📝 Starting articles migration...");
 
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (startFromId) {
     console.log(`Resuming from article ID: ${startFromId}`);
   }
@@ -298,7 +294,6 @@ async function migrateArticles(
           id: "asc" as const,
         },
         take: BATCH_SIZE,
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         ...(lastId && {
           cursor: { id: lastId },
           skip: 1,

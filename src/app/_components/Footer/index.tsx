@@ -5,7 +5,7 @@ export default function Footer(): JSX.Element {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <p>&copy; 2024 kk-web</p>
+        <p>&copy; 2024 オモコロアーカイブ</p>
       </div>
     </footer>
   );
