@@ -1,10 +1,12 @@
 "use server";
 import prismaClient from "@/lib/prismaClient";
 import { type Article, type Category, type Writer } from "@prisma/client";
+import { cookies } from "next/headers";
 
 type FetchArticlesParams = {
   category?: string;
   keyword?: string;
+  order?: "asc" | "desc";
   page: number;
   writer?: string;
 };
@@ -14,11 +16,15 @@ type FetchArticlesCountParams = Omit<FetchArticlesParams, "page">;
 export async function fetchArticles({
   category,
   keyword,
+  order = "desc",
   page,
   writer,
 }: FetchArticlesParams): Promise<
   (Article & { category: Category; writers: Writer[] })[]
 > {
+  const cookieStore = await cookies();
+  const isNotOnigiri = cookieStore.get("is-not-onigiri");
+
   try {
     const articles = await prismaClient.article.findMany({
       include: {
@@ -26,7 +32,7 @@ export async function fetchArticles({
         writers: true,
       },
       orderBy: {
-        publishedAt: "desc",
+        publishedAt: order,
       },
       skip: page * 24,
       take: 24,
@@ -42,10 +48,17 @@ export async function fetchArticles({
                 {
                   category: {
                     name: { equals: category },
+                    ...(isNotOnigiri ? { isOnigiri: false } : {}),
                   },
                 },
               ]
-            : []),
+            : [
+                {
+                  category: {
+                    ...(isNotOnigiri ? { isOnigiri: false } : {}),
+                  },
+                },
+              ]),
           ...(typeof writer === "string" && writer.length > 0
             ? [
                 {
@@ -76,6 +89,9 @@ export async function fetchArticlesCount({
   keyword,
   writer,
 }: FetchArticlesCountParams): Promise<number> {
+  const cookieStore = await cookies();
+  const isNotOnigiri = cookieStore.get("is-not-onigiri");
+
   try {
     const count = await prismaClient.article.count({
       where: {
@@ -90,10 +106,17 @@ export async function fetchArticlesCount({
                 {
                   category: {
                     name: { equals: category },
+                    ...(isNotOnigiri ? { isOnigiri: false } : {}),
                   },
                 },
               ]
-            : []),
+            : [
+                {
+                  category: {
+                    ...(isNotOnigiri ? { isOnigiri: false } : {}),
+                  },
+                },
+              ]),
           ...(typeof writer === "string" && writer.length > 0
             ? [
                 {

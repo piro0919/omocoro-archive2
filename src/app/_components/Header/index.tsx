@@ -1,6 +1,7 @@
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import {
-  IconAdjustmentsHorizontal,
+  IconCalendarDown,
+  IconCalendarUp,
   IconCategory,
   IconGridDots,
   IconPencil,
@@ -9,7 +10,8 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import { parseAsString, useQueryState } from "nuqs";
+import { usePathname } from "next/navigation";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { type JSX, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Spacer from "react-spacer";
@@ -27,6 +29,13 @@ export default function Header(): JSX.Element {
       keyword,
     },
   });
+  const pathname = usePathname();
+  const [order, setOrder] = useQueryState(
+    "order",
+    parseAsStringLiteral(["asc", "desc"])
+      .withDefault("desc")
+      .withOptions({ history: "push", scroll: true, shallow: false }),
+  );
 
   useEffect(() => {
     setValue("keyword", keyword);
@@ -40,26 +49,44 @@ export default function Header(): JSX.Element {
           <Image alt="オモコロアーカイブ" fill={true} src="/logo.png" />
         </Link>
         <Spacer grow={1} />
-        <form
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleSubmit(({ keyword }) => {
-            setKeyword(keyword.replace(/\s+/g, " ").trim());
-          })}
-          className={styles.form}
-        >
-          <IconSearch size={24} />
-          <input
-            {...register("keyword")}
-            className={styles.input}
-            placeholder="記事を検索"
-          />
-        </form>
-        <button className={styles.searchButton}>
-          <IconSearch size={24} />
-        </button>
-        <Link href="/search">
-          <IconAdjustmentsHorizontal size={24} />
-        </Link>
+        {pathname === "/" ? (
+          <>
+            <form
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={handleSubmit(({ keyword }) => {
+                setKeyword(keyword.replace(/\s+/g, " ").trim());
+              })}
+              className={styles.form}
+            >
+              <IconSearch size={24} />
+              <input
+                {...register("keyword")}
+                className={styles.input}
+                placeholder="記事を検索"
+              />
+            </form>
+            <button className={styles.searchButton}>
+              <IconSearch size={24} />
+            </button>
+            {order === "desc" ? (
+              <button
+                onClick={() => {
+                  setOrder("asc");
+                }}
+              >
+                <IconCalendarUp size={24} />
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setOrder("desc");
+                }}
+              >
+                <IconCalendarDown size={24} />
+              </button>
+            )}
+          </>
+        ) : null}
         <Menu
           menuButton={
             <button className={styles.menuButton}>

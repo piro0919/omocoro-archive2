@@ -3,7 +3,7 @@ import { type Article, type Category, type Writer } from "@prisma/client";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import { Fragment, type JSX, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { TailSpin } from "react-loader-spinner";
@@ -32,6 +32,10 @@ export default function App({
     "keyword",
     parseAsString.withDefault(""),
   );
+  const [order] = useQueryState(
+    "order",
+    parseAsStringLiteral(["asc", "desc"]).withDefault("desc"),
+  );
   const [writer, setWriter] = useQueryState(
     "writer",
     parseAsString
@@ -42,9 +46,10 @@ export default function App({
     () => ({
       category,
       keyword,
+      order,
       writer,
     }),
-    [category, keyword, writer],
+    [category, keyword, order, writer],
   );
   const { data: articlesCount = initialArticlesCount } = useSWR(
     ["articlesCount", searchParamsObject],
@@ -65,7 +70,13 @@ export default function App({
   const { data, isValidating, setSize, size } = useSWRInfinite(
     getKey,
     async ([, , pageIndex]) =>
-      fetchArticles({ category, keyword, page: pageIndex as number, writer }),
+      fetchArticles({
+        category,
+        keyword,
+        order,
+        page: pageIndex as number,
+        writer,
+      }),
     {
       fallbackData: [initialArticles],
       revalidateAll: false,
@@ -74,11 +85,17 @@ export default function App({
     },
   );
   const articles = useMemo(() => data ?? [], [data]);
-  const isLoadingMore = isValidating && size > 1;
-  const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length === 0);
-  const hasNextPage = !isReachingEnd;
+  const isLoadingMore = useMemo(
+    () => isValidating && size > 1,
+    [isValidating, size],
+  );
+  const hasNextPage = useMemo(() => {
+    const isEmpty = data?.[0]?.length === 0;
+    const isReachingEnd =
+      isEmpty || (data && data[data.length - 1]?.length === 0);
+
+    return !isReachingEnd;
+  }, [data]);
   const { inView, ref } = useInView({
     rootMargin: "100px 0px",
     threshold: 0.1,

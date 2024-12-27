@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
+import "pretty-checkbox/dist/pretty-checkbox.min.css";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";

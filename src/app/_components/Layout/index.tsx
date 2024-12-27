@@ -7,13 +7,14 @@ import {
   useState,
 } from "react";
 import useShowWindowSize from "use-show-window-size";
+import { useBoolean } from "usehooks-ts";
 import Footer from "../Footer";
 import Header from "../Header";
 import MobileNavigation from "../MobileNavigation";
 import styles from "./style.module.css";
 
 export default function Layout({ children }: PropsWithChildren): JSX.Element {
-  const [isVisible, setIsVisible] = useState(true);
+  const { setValue: setIsVisible, value: isVisible } = useBoolean(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Layout({ children }: PropsWithChildren): JSX.Element {
     return (): void => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, setIsVisible]);
 
   useShowWindowSize({
     disable: process.env.NODE_ENV === "production",
