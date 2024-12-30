@@ -1,23 +1,28 @@
 "use server";
 import prismaClient from "@/lib/prismaClient";
 import { type Article, type Category, type Writer } from "@prisma/client";
+import { fromZonedTime } from "date-fns-tz";
 import { cookies } from "next/headers";
 
 type FetchArticlesParams = {
   category?: string;
+  from?: string;
   keyword?: string;
   order?: "asc" | "desc";
   page: number;
+  to?: string;
   writer?: string;
 };
 
-type FetchArticlesCountParams = Omit<FetchArticlesParams, "page">;
+type FetchArticlesCountParams = Omit<FetchArticlesParams, "order" | "page">;
 
 export async function fetchArticles({
   category,
+  from,
   keyword,
   order = "desc",
   page,
+  to,
   writer,
 }: FetchArticlesParams): Promise<
   (Article & { category: Category; writers: Writer[] })[]
@@ -68,6 +73,19 @@ export async function fetchArticles({
                 },
               ]
             : []),
+          ...(typeof from === "string" &&
+          from.length > 0 &&
+          typeof to === "string" &&
+          to.length > 0
+            ? [
+                {
+                  publishedAt: {
+                    gte: fromZonedTime(from, "Asia/Tokyo"),
+                    lte: fromZonedTime(to, "Asia/Tokyo"),
+                  },
+                },
+              ]
+            : []),
         ],
       },
     });
@@ -86,7 +104,9 @@ export async function fetchArticles({
 
 export async function fetchArticlesCount({
   category,
+  from,
   keyword,
+  to,
   writer,
 }: FetchArticlesCountParams): Promise<number> {
   const cookieStore = await cookies();
@@ -122,6 +142,19 @@ export async function fetchArticlesCount({
                 {
                   writers: {
                     some: { name: { equals: writer } },
+                  },
+                },
+              ]
+            : []),
+          ...(typeof from === "string" &&
+          from.length > 0 &&
+          typeof to === "string" &&
+          to.length > 0
+            ? [
+                {
+                  publishedAt: {
+                    gte: new Date(from),
+                    lte: new Date(to),
                   },
                 },
               ]

@@ -30,13 +30,27 @@ export default function App({
       .withDefault("")
       .withOptions({ history: "push", scroll: true, shallow: false }),
   );
+  const [from, setFrom] = useQueryState(
+    "from",
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true, shallow: false }),
+  );
   const [keyword, setKeyword] = useQueryState(
     "keyword",
-    parseAsString.withDefault(""),
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true, shallow: false }),
   );
   const [order] = useQueryState(
     "order",
     parseAsStringLiteral(["asc", "desc"]).withDefault("desc"),
+  );
+  const [to, setTo] = useQueryState(
+    "to",
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true, shallow: false }),
   );
   const [writer, setWriter] = useQueryState(
     "writer",
@@ -47,15 +61,17 @@ export default function App({
   const searchParamsObject = useMemo(
     () => ({
       category,
+      from,
       keyword,
       order,
+      to,
       writer,
     }),
-    [category, keyword, order, writer],
+    [category, from, keyword, order, to, writer],
   );
   const { data: articlesCount = initialArticlesCount } = useSWR(
     ["articlesCount", searchParamsObject],
-    async () => fetchArticlesCount({ category, keyword, writer }),
+    async () => fetchArticlesCount({ category, from, keyword, to, writer }),
     {
       dedupingInterval: 2000,
       fallbackData: initialArticlesCount,
@@ -75,9 +91,11 @@ export default function App({
     async ([, , pageIndex]) =>
       fetchArticles({
         category,
+        from,
         keyword,
         order,
         page: pageIndex as number,
+        to,
         writer,
       }),
     {
@@ -157,6 +175,18 @@ export default function App({
             className={styles.badge}
           >
             <span>{writer}</span>
+            <IconCircleXFilled size={18} />
+          </button>
+        ) : null}
+        {from && to ? (
+          <button
+            onClick={() => {
+              setFrom("");
+              setTo("");
+            }}
+            className={styles.badge}
+          >
+            <span>{`${from.replaceAll("-", ".")} - ${to.replaceAll("-", ".")}`}</span>
             <IconCircleXFilled size={18} />
           </button>
         ) : null}
