@@ -2,7 +2,8 @@
   background: #fff;
   border-top: 1px solid #cbd1da;
   display: flex;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom));
+  padding: 0 0 env(safe-area-inset-bottom);
 }
 
 .tab {

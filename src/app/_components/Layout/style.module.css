@@ -14,7 +14,7 @@
   padding: 60px 0;
 
   @media (width >= 740px) {
-    min-height: calc(100dvh - 60px);
+    min-height: calc(100dvh - (60px + env(safe-area-inset-bottom)));
     padding-bottom: 0;
   }
 }

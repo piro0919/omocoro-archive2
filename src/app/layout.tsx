@@ -9,6 +9,9 @@ import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
 import "pretty-checkbox/dist/pretty-checkbox.min.css";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+// theme css file
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";

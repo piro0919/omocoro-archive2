@@ -3,6 +3,7 @@ import {
   IconArrowLeft,
   IconCalendarDown,
   IconCalendarUp,
+  IconCalendarWeek,
   IconCategory,
   IconGridDots,
   IconPencil,
@@ -14,7 +15,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
-import { type JSX, useEffect, useRef } from "react";
+import { type JSX, useEffect, useRef, useState } from "react";
+import { DateRangePicker, type Range } from "react-date-range";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import * as locales from "react-date-range/dist/locale";
 import { useForm } from "react-hook-form";
 import Spacer from "react-spacer";
 import { useBoolean, useOnClickOutside } from "usehooks-ts";
@@ -45,10 +50,25 @@ export default function Header(): JSX.Element {
     value: isShowSearch,
   } = useBoolean(false);
   const ref = useRef<HTMLDivElement>(null);
+  const ref2 = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const {
+    setFalse: offIsShowDateRangePicker,
+    setTrue: onIsShowDateRangePicker,
+    value: isShowDateRangePicker,
+  } = useBoolean(false);
+  const [range, setRange] = useState<Range>({
+    endDate: new Date(),
+    key: "range",
+    startDate: new Date(),
+  });
 
   // @ts-expect-error: useOnClickOutside does not support ref type
   useOnClickOutside(ref, offIsShowSearch);
+  // @ts-expect-error: useOnClickOutside does not support ref type
+  useOnClickOutside(ref2, () => {
+    offIsShowDateRangePicker();
+  });
 
   useEffect(() => {
     setValue("keyword", keyword);
@@ -78,45 +98,69 @@ export default function Header(): JSX.Element {
         </motion.div>
         <Spacer grow={1} />
         {pathname === "/" && !isShowSearch ? (
-          <>
-            <form
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onSubmit={handleSubmit(({ keyword }) => {
-                setKeyword(keyword.replace(/\s+/g, " ").trim());
-              })}
-              className={styles.form}
-            >
-              <IconSearch size={24} />
-              <input
-                {...register("keyword")}
-                className={styles.input}
-                placeholder="記事を検索"
-              />
-            </form>
-            <button
-              className={styles.searchButton}
-              onClick={() => onIsShowSearch()}
-            >
-              <IconSearch size={24} />
+          <form
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={handleSubmit(({ keyword }) => {
+              setKeyword(keyword.replace(/\s+/g, " ").trim());
+            })}
+            className={styles.form}
+          >
+            <IconSearch size={24} />
+            <input
+              {...register("keyword")}
+              className={styles.input}
+              placeholder="記事を検索"
+            />
+          </form>
+        ) : null}
+        {pathname === "/" ? (
+          <button
+            className={styles.searchButton}
+            onClick={() => onIsShowSearch()}
+          >
+            <IconSearch size={24} />
+          </button>
+        ) : null}
+        {pathname === "/" ? (
+          <div className={styles.calendar}>
+            <button onClick={() => onIsShowDateRangePicker()}>
+              <IconCalendarWeek size={24} />
             </button>
-            {order === "desc" ? (
-              <button
-                onClick={() => {
-                  setOrder("asc");
-                }}
-              >
-                <IconCalendarUp size={24} />
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  setOrder("desc");
-                }}
-              >
-                <IconCalendarDown size={24} />
-              </button>
-            )}
-          </>
+            {isShowDateRangePicker ? (
+              <div ref={ref2}>
+                <DateRangePicker
+                  onChange={({ range }) => {
+                    setRange(range);
+                  }}
+                  className={styles.dateRangePicker}
+                  dateDisplayFormat="yyyy年MM月dd日"
+                  locale={locales.ja.ja}
+                  maxDate={new Date()}
+                  minDate={new Date("2005-10-19")}
+                  ranges={[range]}
+                />
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+        {pathname === "/" ? (
+          order === "desc" ? (
+            <button
+              onClick={() => {
+                setOrder("asc");
+              }}
+            >
+              <IconCalendarUp size={24} />
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setOrder("desc");
+              }}
+            >
+              <IconCalendarDown size={24} />
+            </button>
+          )
         ) : null}
         <Menu
           menuButton={
