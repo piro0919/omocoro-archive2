@@ -11,7 +11,7 @@
 }
 
 .main {
-  padding: 60px 0;
+  padding: 60px 0 calc(60px + env(safe-area-inset-bottom));
 
   @media (width >= 740px) {
     min-height: calc(100dvh - (60px + env(safe-area-inset-bottom)));
