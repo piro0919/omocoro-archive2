@@ -17,7 +17,7 @@ type PageProps = {
 export default async function Page({
   searchParams,
 }: PageProps): Promise<JSX.Element> {
-  const { category, keyword, order, writer } =
+  const { category, from, keyword, order, to, writer } =
     await searchParamsCache.parse(searchParams);
 
   if (keyword) {
@@ -26,14 +26,18 @@ export default async function Page({
 
   const initialArticles = await fetchArticles({
     category,
+    from,
     keyword,
     order,
     page: 0,
+    to,
     writer,
   });
   const initialArticlesCount = await fetchArticlesCount({
     category,
+    from,
     keyword,
+    to,
     writer,
   });
 

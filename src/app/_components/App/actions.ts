@@ -153,8 +153,8 @@ export async function fetchArticlesCount({
             ? [
                 {
                   publishedAt: {
-                    gte: new Date(from),
-                    lte: new Date(to),
+                    gte: fromZonedTime(from, "Asia/Tokyo"),
+                    lte: fromZonedTime(to, "Asia/Tokyo"),
                   },
                 },
               ]
