@@ -4,7 +4,7 @@ import { type JSX, type ReactNode } from "react";
 import Layout from "./_components/Layout";
 import "react-tabs/style/react-tabs.css";
 import "ress";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
@@ -52,6 +52,10 @@ export const metadata: Metadata = {
       template: APP_TITLE_TEMPLATE,
     },
   },
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
