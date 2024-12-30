@@ -1,17 +1,17 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Noto_Sans_JP as NotoSansJP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { type JSX, type ReactNode } from "react";
-import Layout from "./_components/Layout";
 import "react-tabs/style/react-tabs.css";
 import "ress";
-import type { Metadata, Viewport } from "next";
+import Layout from "./_components/Layout";
 import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
 import "pretty-checkbox/dist/pretty-checkbox.min.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-// theme css file
+import type { Metadata, Viewport } from "next";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";
@@ -70,6 +70,9 @@ export default function RootLayout({
           <Layout>{children}</Layout>
         </NuqsAdapter>
       </body>
+      {process.env.NODE_ENV === "production" ? (
+        <GoogleAnalytics gaId="G-EL918GHVFM" />
+      ) : null}
     </html>
   );
 }
