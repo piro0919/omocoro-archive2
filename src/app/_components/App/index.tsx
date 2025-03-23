@@ -232,7 +232,8 @@ export default function App({
                     decoding="async"
                     fill={true}
                     loading="lazy"
-                    src={thumbnail}
+                    referrerPolicy="no-referrer"
+                    src={`/api/proxy?url=${encodeURIComponent(thumbnail)}`}
                   />
                 </div>
               </a>

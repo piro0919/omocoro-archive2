@@ -6,7 +6,15 @@ export const dynamic = "force-dynamic";
 
 export default async function Page(): Promise<JSX.Element> {
   const cookieStore = await cookies();
+  const isNotMovie = cookieStore.get("is-not-movie");
   const isNotOnigiri = cookieStore.get("is-not-onigiri");
+  const isNotRadio = cookieStore.get("is-not-radio");
 
-  return <Mypage isNotOnigiri={isNotOnigiri?.value === "true"} />;
+  return (
+    <Mypage
+      isNotMovie={isNotMovie?.value === "true"}
+      isNotOnigiri={isNotOnigiri?.value === "true"}
+      isNotRadio={isNotRadio?.value === "true"}
+    />
+  );
 }

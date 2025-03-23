@@ -28,7 +28,14 @@ export async function fetchArticles({
   (Article & { category: Category; writers: Writer[] })[]
 > {
   const cookieStore = await cookies();
-  const isNotOnigiri = cookieStore.get("is-not-onigiri");
+  const isNotOnigiri = cookieStore.get("is-not-onigiri")?.value === "true";
+  const isNotMovie = cookieStore.get("is-not-movie")?.value === "true";
+  const isNotRadio = cookieStore.get("is-not-radio")?.value === "true";
+  // 除外するカテゴリーのリスト
+  const excludeCategories = [
+    ...(isNotMovie ? ["オモコロチャンネル", "ふっくらすずめクラブ"] : []),
+    ...(isNotRadio ? ["限定ラジオ", "ラジオ"] : []),
+  ];
 
   try {
     const articles = await prismaClient.article.findMany({
@@ -61,6 +68,9 @@ export async function fetchArticles({
                 {
                   category: {
                     ...(isNotOnigiri ? { isOnigiri: false } : {}),
+                    ...(excludeCategories.length > 0
+                      ? { name: { notIn: excludeCategories } }
+                      : {}),
                   },
                 },
               ]),
@@ -110,7 +120,14 @@ export async function fetchArticlesCount({
   writer,
 }: FetchArticlesCountParams): Promise<number> {
   const cookieStore = await cookies();
-  const isNotOnigiri = cookieStore.get("is-not-onigiri");
+  const isNotOnigiri = cookieStore.get("is-not-onigiri")?.value === "true";
+  const isNotMovie = cookieStore.get("is-not-movie")?.value === "true";
+  const isNotRadio = cookieStore.get("is-not-radio")?.value === "true";
+  // 除外するカテゴリーのリスト
+  const excludeCategories = [
+    ...(isNotMovie ? ["オモコロチャンネル", "ふっくらすずめクラブ"] : []),
+    ...(isNotRadio ? ["限定ラジオ", "ラジオ"] : []),
+  ];
 
   try {
     const count = await prismaClient.article.count({
@@ -134,6 +151,9 @@ export async function fetchArticlesCount({
                 {
                   category: {
                     ...(isNotOnigiri ? { isOnigiri: false } : {}),
+                    ...(excludeCategories.length > 0
+                      ? { name: { notIn: excludeCategories } }
+                      : {}),
                   },
                 },
               ]),

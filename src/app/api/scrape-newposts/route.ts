@@ -42,6 +42,13 @@ function extractArticleData(
       return null;
     }
 
+    // 日付文字列がない場合はスキップ
+    if (!publishedAtStr) {
+      console.log(`Skipping article without date: ${title}`);
+
+      return null;
+    }
+
     let publishedAt: Date | null = null;
 
     if (publishedAtStr) {

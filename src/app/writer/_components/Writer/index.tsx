@@ -20,7 +20,8 @@ export default function Writer({ writers }: WriterProps): JSX.Element {
                 decoding="async"
                 height={45}
                 loading="lazy"
-                src={avatarUrl}
+                referrerPolicy="no-referrer"
+                src={`/api/proxy?url=${encodeURIComponent(avatarUrl)}`}
                 width={45}
               />
               <span className={styles.name}>{name}</span>

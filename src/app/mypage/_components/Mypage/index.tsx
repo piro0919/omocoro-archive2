@@ -7,10 +7,16 @@ import { useBoolean } from "usehooks-ts";
 import styles from "./style.module.css";
 
 export type MypageProps = {
+  isNotMovie: boolean;
   isNotOnigiri: boolean;
+  isNotRadio: boolean;
 };
 
-export default function Mypage({ isNotOnigiri }: MypageProps): JSX.Element {
+export default function Mypage({
+  isNotMovie,
+  isNotOnigiri,
+  isNotRadio,
+}: MypageProps): JSX.Element {
   const {
     appinstalled,
     canInstallprompt,
@@ -18,7 +24,12 @@ export default function Mypage({ isNotOnigiri }: MypageProps): JSX.Element {
     isPwa,
     showInstallPrompt,
   } = usePwa();
-  const { setValue: setChecked, value: checked } = useBoolean(isNotOnigiri);
+  const { setValue: setCheckedIsNotMovie, value: checkedIsNotMovie } =
+    useBoolean(isNotMovie);
+  const { setValue: setCheckedIsNotOnigiri, value: checkedIsNotOnigiri } =
+    useBoolean(isNotOnigiri);
+  const { setValue: setCheckedIsNotRadio, value: checkedIsNotRadio } =
+    useBoolean(isNotRadio);
 
   return (
     <div className={styles.wrapper}>
@@ -33,12 +44,42 @@ export default function Mypage({ isNotOnigiri }: MypageProps): JSX.Element {
                 secure: true,
               });
 
-              setChecked(e.currentTarget.checked);
+              setCheckedIsNotOnigiri(e.currentTarget.checked);
             }}
-            checked={checked}
+            checked={checkedIsNotOnigiri}
             className={styles.checkbox}
           >
             ほかほかおにぎりクラブ会員専用コンテンツを非表示にする
+          </Checkbox>
+          <Checkbox
+            onChange={(e) => {
+              setCookie("is-not-movie", e.currentTarget.checked, {
+                maxAge: 365 * 24 * 60 * 60,
+                sameSite: "lax",
+                secure: true,
+              });
+
+              setCheckedIsNotMovie(e.currentTarget.checked);
+            }}
+            checked={checkedIsNotMovie}
+            className={styles.checkbox}
+          >
+            動画を非表示にする
+          </Checkbox>
+          <Checkbox
+            onChange={(e) => {
+              setCookie("is-not-radio", e.currentTarget.checked, {
+                maxAge: 365 * 24 * 60 * 60,
+                sameSite: "lax",
+                secure: true,
+              });
+
+              setCheckedIsNotRadio(e.currentTarget.checked);
+            }}
+            checked={checkedIsNotRadio}
+            className={styles.checkbox}
+          >
+            ラジオを非表示にする
           </Checkbox>
         </div>
       </article>
