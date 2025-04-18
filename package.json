@@ -1,20 +1,20 @@
 {
   "dependencies": {
     "@neondatabase/serverless": "1.0.0",
-    "@next/third-parties": "15.3.0",
+    "@next/third-parties": "15.3.1",
     "@prisma/client": "6.6.0",
     "@react-hook/previous": "1.0.1",
     "@serwist/next": "9.0.13",
-    "@szhsin/react-menu": "4.3.1",
+    "@szhsin/react-menu": "4.4.0",
     "@t3-oss/env-nextjs": "0.12.0",
     "@tabler/icons-react": "3.31.0",
     "@vercel/postgres": "0.10.0",
     "cheerio": "1.0.0",
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
-    "framer-motion": "12.6.5",
-    "next": "15.3.0",
-    "nuqs": "2.4.1",
+    "framer-motion": "12.7.4",
+    "next": "15.3.1",
+    "nuqs": "2.4.3",
     "pretty-checkbox": "3.0.3",
     "pretty-checkbox-react": "3.2.0",
     "prisma": "6.6.0",
@@ -35,7 +35,7 @@
     "use-pwa": "2.2.0",
     "use-show-window-size": "0.0.1",
     "usehooks-ts": "3.1.1",
-    "zod": "3.24.2"
+    "zod": "3.24.3"
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.1",
