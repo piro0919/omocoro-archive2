@@ -5,14 +5,14 @@
     "@prisma/client": "6.8.2",
     "@react-hook/previous": "1.0.1",
     "@serwist/next": "9.0.14",
-    "@szhsin/react-menu": "4.4.0",
+    "@szhsin/react-menu": "4.4.1",
     "@t3-oss/env-nextjs": "0.13.4",
     "@tabler/icons-react": "3.33.0",
     "@vercel/postgres": "0.10.0",
     "cheerio": "1.0.0",
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
-    "framer-motion": "12.12.1",
+    "framer-motion": "12.12.2",
     "next": "15.3.2",
     "nuqs": "2.4.3",
     "pretty-checkbox": "3.0.3",
@@ -35,7 +35,7 @@
     "use-pwa": "2.2.0",
     "use-show-window-size": "0.0.1",
     "usehooks-ts": "3.1.1",
-    "zod": "3.24.4"
+    "zod": "3.25.28"
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.1",
