@@ -57,7 +57,7 @@
     "cross-env": "7.0.3",
     "depcheck": "1.4.7",
     "domhandler": "5.0.3",
-    "dotenv": "16.4.7",
+    "dotenv": "17.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "eslint-config-prettier": "10.0.1",
