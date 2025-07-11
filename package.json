@@ -12,7 +12,7 @@
     "cheerio": "1.1.0",
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
-    "framer-motion": "12.23.0",
+    "framer-motion": "12.23.3",
     "next": "15.3.5",
     "nuqs": "2.4.3",
     "pretty-checkbox": "3.0.3",
@@ -35,7 +35,7 @@
     "use-pwa": "2.2.0",
     "use-show-window-size": "0.0.1",
     "usehooks-ts": "3.1.1",
-    "zod": "3.25.74"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.1",
