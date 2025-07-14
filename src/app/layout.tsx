@@ -1,16 +1,16 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { ThemeProvider } from "next-themes";
 import { Noto_Sans_JP as NotoSansJP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { type JSX, type ReactNode } from "react";
 import "react-tabs/style/react-tabs.css";
-import "ress";
-import Layout from "./_components/Layout";
+import { type JSX, type ReactNode } from "react";
 import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
 import "pretty-checkbox/dist/pretty-checkbox.min.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import Layout from "./_components/Layout";
 import type { Metadata, Viewport } from "next";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
@@ -66,9 +66,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={notoSansJP.className}>
-        <NuqsAdapter>
-          <Layout>{children}</Layout>
-        </NuqsAdapter>
+        <ThemeProvider enableSystem={false}>
+          <NuqsAdapter>
+            <Layout>{children}</Layout>
+          </NuqsAdapter>
+        </ThemeProvider>
       </body>
       {process.env.NODE_ENV === "production" ? (
         <GoogleAnalytics gaId="G-EL918GHVFM" />
