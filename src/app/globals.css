@@ -1,5 +1,23 @@
 @import "ress";
 
+:root {
+  --background: #f6f6f6;
+  --foreground: #333;
+  --card: #fff;
+  --border: #cbd1da;
+  --muted: #999;
+  --active: #bdc3c7;
+}
+
+[data-theme="dark"] {
+  --background: #333;
+  --foreground: #f6f6f6;
+  --card: #2a2a2a;
+  --border: #404040;
+  --muted: #888;
+  --active: #606060;
+}
+
 html {
   @media (width < 740px) {
     font-size: 56.25%;
@@ -10,8 +28,8 @@ html {
 }
 
 body {
-  background: #f6f6f6;
-  color: #333;
+  background: hsl(from var(--background) h s l);
+  color: hsl(from var(--foreground) h s l);
 }
 
 * {

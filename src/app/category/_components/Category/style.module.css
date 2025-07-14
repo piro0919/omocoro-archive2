@@ -11,7 +11,7 @@
 }
 
 .link {
-  background: #fff;
+  background: hsl(from var(--card) h s l);
   display: flex;
   gap: 12px;
   justify-content: center;

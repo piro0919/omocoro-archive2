@@ -12,7 +12,7 @@
 
 .link {
   align-items: center;
-  background: #fff;
+  background: hsl(from var(--card) h s l);
   display: flex;
   gap: 12px;
   padding: 0 12px 0 0;

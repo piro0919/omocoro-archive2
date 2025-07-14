@@ -1,7 +1,7 @@
 .header {
   align-items: center;
-  background: #fff;
-  border-bottom: 1px solid #cbd1da;
+  background: hsl(from var(--card) h s l);
+  border-bottom: 1px solid hsl(from var(--border) h s l);
   display: flex;
   height: 60px;
   position: relative;
@@ -9,7 +9,7 @@
 
 .inner {
   align-items: center;
-  color: #999;
+  color: hsl(from var(--muted) h s l);
   display: flex;
   gap: min(12px, 2dvw);
   margin: 0 auto;
@@ -38,7 +38,7 @@
 
 .form {
   align-items: center;
-  border: 1px solid #cbd1da;
+  border: 1px solid hsl(from var(--border) h s l);
   border-radius: 50dvmax;
   display: flex;
   gap: 6px;
@@ -75,8 +75,8 @@
 
 .inner2 {
   align-items: center;
-  background: #fff;
-  color: #999;
+  background: hsl(from var(--card) h s l);
+  color: hsl(from var(--muted) h s l);
   display: flex;
   gap: min(12px, 2dvw);
   inset: 0;
@@ -93,7 +93,7 @@
 
 .form2 {
   align-items: center;
-  border: 1px solid #cbd1da;
+  border: 1px solid hsl(from var(--border) h s l);
   border-radius: 50dvmax;
   display: flex;
   gap: 6px;

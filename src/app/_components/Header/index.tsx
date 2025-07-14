@@ -11,6 +11,7 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -55,6 +56,7 @@ export default function Header(): JSX.Element {
     setTrue: onIsShowDateRangePicker,
     value: isShowDateRangePicker,
   } = useBoolean(false);
+  const { theme } = useTheme();
 
   // @ts-expect-error: useOnClickOutside does not support ref type
   useOnClickOutside(ref, offIsShowSearch);
@@ -144,6 +146,7 @@ export default function Header(): JSX.Element {
             align="end"
             arrow={true}
             direction="bottom"
+            theming={theme}
             transition={true}
           >
             <MenuItem onClick={() => router.push("/writer")}>

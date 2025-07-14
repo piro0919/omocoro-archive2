@@ -7,8 +7,8 @@
 }
 
 .article {
-  background: #fff;
-  border: 1px solid #cbd1da;
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
   border-radius: 3px;
   display: grid;
   padding: min(12px, 2dvw) min(12px, 2dvw) calc(min(12px, 2dvw) * 1.5);
@@ -30,8 +30,8 @@
 }
 
 .button {
-  background: #fff;
-  border: 1px solid #cbd1da;
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
   border-radius: 3px;
   font-size: 1.4rem;
   padding: 6px 12px;

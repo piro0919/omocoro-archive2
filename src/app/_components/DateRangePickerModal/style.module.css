@@ -1,13 +1,13 @@
 .overlay {
   backdrop-filter: blur(1px);
-  background: rgb(255 255 255 / 0.9);
+  background: hsl(from var(--card) h s calc(l * 0.9));
   inset: 0;
   position: fixed;
   z-index: 1;
 }
 
 .dateRangePicker {
-  border: 1px solid #cbd1da;
+  border: 1px solid hsl(from var(--border) h s l);
 }
 
 .dateRangePicker :global(.rdrDefinedRangesWrapper) {
@@ -32,8 +32,8 @@
 }
 
 .button {
-  background: #fff;
-  border: 1px solid #cbd1da;
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
   border-radius: 3px;
   font-size: 1.4rem;
   padding: 6px 12px;

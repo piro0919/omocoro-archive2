@@ -1,5 +1,6 @@
 "use client";
 import { setCookie } from "@/lib/cookies";
+import { useTheme } from "next-themes";
 import { Checkbox } from "pretty-checkbox-react";
 import { type JSX } from "react";
 import usePwa from "use-pwa";
@@ -30,6 +31,7 @@ export default function Mypage({
     useBoolean(isNotOnigiri);
   const { setValue: setCheckedIsNotRadio, value: checkedIsNotRadio } =
     useBoolean(isNotRadio);
+  const { setTheme, theme } = useTheme();
 
   return (
     <div className={styles.wrapper}>
@@ -81,6 +83,22 @@ export default function Mypage({
           >
             ラジオを非表示にする
           </Checkbox>
+        </div>
+      </article>
+      <article className={styles.article}>
+        <div className={styles.inner}>
+          <h2 className={styles.h2}>外観</h2>
+          <div className={styles.theme}>
+            <Checkbox
+              onChange={(e) =>
+                setTheme(e.currentTarget.checked ? "dark" : "light")
+              }
+              checked={theme === "dark"}
+              className={styles.checkbox}
+            >
+              ダークモードを有効にする
+            </Checkbox>
+          </div>
         </div>
       </article>
       {enabledPwa && !isPwa ? (

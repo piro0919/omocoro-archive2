@@ -7,6 +7,7 @@ import { type JSX, type ReactNode } from "react";
 import "./globals.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
+import "@szhsin/react-menu/dist/theme-dark.css";
 import "pretty-checkbox/dist/pretty-checkbox.min.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -64,7 +65,7 @@ export default function RootLayout({
   children: ReactNode;
 }>): JSX.Element {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning={true}>
       <body className={notoSansJP.className}>
         <ThemeProvider enableSystem={false}>
           <NuqsAdapter>

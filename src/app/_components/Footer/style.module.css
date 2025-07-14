@@ -1,6 +1,6 @@
 .footer {
-  background: #fff;
-  border-top: 1px solid #cbd1da;
+  background: hsl(from var(--card) h s l);
+  border-top: 1px solid hsl(from var(--border) h s l);
   height: 60px;
 }
 

@@ -14,9 +14,9 @@
 
 .badge {
   align-items: center;
-  background: #fff;
-  border: 1px solid #cbd1da;
-  color: #999;
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
+  color: hsl(from var(--muted) h s l);
   display: flex;
   font-size: 1.1rem;
   gap: 3px;
@@ -38,7 +38,7 @@
 }
 
 .item {
-  background: #fff;
+  background: hsl(from var(--card) h s l);
 
   @media (width < 740px) {
     display: grid;
@@ -70,7 +70,7 @@
 }
 
 .meta {
-  color: #999;
+  color: hsl(from var(--muted) h s l);
   font-size: 1.1rem;
   line-height: 1.375;
 }
