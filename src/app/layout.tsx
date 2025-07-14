@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     template: APP_TITLE_TEMPLATE,
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     description: APP_DESCRIPTION,
     title: {
       default: APP_DEFAULT_TITLE,
