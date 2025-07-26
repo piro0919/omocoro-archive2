@@ -55,7 +55,7 @@
     "@uphold/commitlint-config": "1.1.1",
     "better-typescript-lib": "2.10.0",
     "commitlint-plugin-tense": "1.0.4",
-    "cross-env": "7.0.3",
+    "cross-env": "10.0.0",
     "depcheck": "1.4.7",
     "domhandler": "5.0.3",
     "dotenv": "17.0.0",
