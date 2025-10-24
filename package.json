@@ -72,7 +72,7 @@
     "eslint-plugin-unused-imports": "4.1.4",
     "eslint-plugin-write-good-comments": "0.2.0",
     "knip": "5.42.0",
-    "lefthook": "1.10.3",
+    "lefthook": "2.0.1",
     "prettier": "3.4.2",
     "serwist": "9.0.11",
     "stylelint": "16.12.0",
