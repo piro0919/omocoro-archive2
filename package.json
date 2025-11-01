@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@neondatabase/serverless": "1.0.1",
-    "@next/third-parties": "15.5.0",
+    "@next/third-parties": "16.0.1",
     "@prisma/client": "6.14.0",
     "@react-hook/previous": "1.0.1",
     "@serwist/next": "9.1.1",
@@ -13,7 +13,7 @@
     "date-fns": "4.1.0",
     "date-fns-tz": "3.2.0",
     "framer-motion": "12.23.12",
-    "next": "15.5.0",
+    "next": "16.0.1",
     "next-themes": "0.4.6",
     "nuqs": "2.5.0",
     "pretty-checkbox": "3.0.3",
@@ -60,7 +60,7 @@
     "domhandler": "5.0.3",
     "dotenv": "17.0.0",
     "eslint": "^9",
-    "eslint-config-next": "15.1.4",
+    "eslint-config-next": "16.0.1",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-css": "0.11.0",
     "eslint-plugin-css-modules": "2.12.0",
