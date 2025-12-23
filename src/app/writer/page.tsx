@@ -1,6 +1,6 @@
 import prismaClient from "@/lib/prisma-client";
 import { type Writer } from "@prisma/client";
-import WriterComponent from "./_components/writer";
+import WriterComponent from "./_components/Writer";
 
 // 12 時間
 export const revalidate = 43200;

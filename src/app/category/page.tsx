@@ -1,6 +1,6 @@
 import prismaClient from "@/lib/prisma-client";
 import { type Category } from "@prisma/client";
-import CategoryComponent from "./_components/category";
+import CategoryComponent from "./_components/Category";
 
 // 12 時間
 export const revalidate = 43200;

@@ -6,7 +6,7 @@ import { Noto_Sans_JP as NotoSansJP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { type JSX, type ReactNode } from "react";
 import "react-toggle/style.css";
-import Layout from "./_components/layout";
+import Layout from "./_components/Layout";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";

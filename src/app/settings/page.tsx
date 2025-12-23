@@ -1,4 +1,4 @@
-import Settings from "./_components/settings";
+import Settings from "./_components/Settings";
 
 export const dynamic = "force-dynamic";
 
