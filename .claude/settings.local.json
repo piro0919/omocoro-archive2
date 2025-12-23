@@ -1,6 +1,10 @@
 {
   "permissions": {
-    "allow": ["Bash(npm run seed:local:*)", "Bash(git mv:*)"],
+    "allow": [
+      "Bash(npm run seed:local:*)",
+      "Bash(git mv:*)",
+      "Bash(npm run build:*)"
+    ],
     "deny": []
   }
 }

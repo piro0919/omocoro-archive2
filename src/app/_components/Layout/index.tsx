@@ -2,7 +2,7 @@
 import fetcher from "@/lib/fetcher";
 import { ProgressProvider } from "@bprogress/next/app";
 import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import { SWRConfig } from "swr";
 import useShowWindowSize from "use-show-window-size";
 import Footer from "../Footer";
@@ -41,7 +41,9 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
       >
         <div className={styles.container}>
           <div className={styles.header}>
-            <Header />
+            <Suspense>
+              <Header />
+            </Suspense>
           </div>
           <main className={styles.main}>{children}</main>
           <div className={styles.footer}>
