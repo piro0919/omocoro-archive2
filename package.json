@@ -30,6 +30,7 @@
     "sleep-promise": "9.1.0",
     "swr": "2.3.6",
     "unique-objects": "1.11.0",
+    "use-pwa": "2.2.0",
     "use-show-window-size": "0.0.1",
     "usehooks-ts": "3.1.1",
     "zod": "4.1.1"
@@ -89,20 +90,24 @@
       "react": "^19.0.0",
       "react-dom": "^19.0.0"
     },
+    "react-toggle": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
     "stylelint-css-modules-no-global-scoped-selector": {
-      "stylelint": "16.26.1"
+      "stylelint": "16.12.0"
     },
     "stylelint-no-unused-selectors": {
-      "stylelint": "16.26.1"
+      "stylelint": "16.12.0"
     },
     "usehooks-ts": {
-      "react": "^19.0.0"
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
     }
   },
   "private": true,
   "scripts": {
     "build": "next build",
-    "postbuild": "next-sitemap",
     "depcheck": "depcheck",
     "dev": "next dev",
     "dev:prod": "cross-env NODE_ENV=production next dev",
@@ -115,6 +120,7 @@
     "migrate:create": "dotenv -e .env.local -- npx prisma migrate dev",
     "migrate:dev": "dotenv -e .env.development.local -- npm run migrate",
     "migrate:prod": "dotenv -e .env.local -- npm run migrate",
+    "postbuild": "next-sitemap",
     "prettier": "prettier --write .",
     "seed": "cross-env NODE_ENV=development tsx prisma/seed.ts",
     "seed:local": "cross-env NODE_ENV=development tsx prisma/seed-local.ts",

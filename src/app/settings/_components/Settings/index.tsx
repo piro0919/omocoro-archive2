@@ -1,7 +1,9 @@
 "use client";
+import { IconDownload } from "@tabler/icons-react";
 import { useGetCookie } from "cookies-next/client";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
+import usePwa from "use-pwa";
 import { setIsNotMovie, setIsNotOnigiri, setIsNotRadio } from "../../actions";
 import styles from "./style.module.css";
 
@@ -13,6 +15,13 @@ export default function Settings(): React.JSX.Element {
   const isNotMovie = getCookie("is-not-movie");
   const isNotRadio = getCookie("is-not-radio");
   const { setTheme, theme } = useTheme();
+  const {
+    appinstalled,
+    canInstallprompt,
+    enabledPwa,
+    isPwa,
+    showInstallPrompt,
+  } = usePwa();
 
   return (
     <div className={styles.container}>
@@ -58,6 +67,19 @@ export default function Settings(): React.JSX.Element {
             defaultChecked={theme === "dark"}
           />
         </label>
+        {enabledPwa && !isPwa ? (
+          <div className={styles.label}>
+            <span className={styles.labelText}>ホーム画面に追加する</span>
+            <button
+              className={styles.button}
+              disabled={!canInstallprompt || appinstalled}
+              onClick={showInstallPrompt}
+            >
+              <IconDownload size={18} />
+              <span className={styles.buttonText}>インストール</span>
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );
