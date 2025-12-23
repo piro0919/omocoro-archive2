@@ -1,16 +1,22 @@
-import prismaClient from "@/lib/prismaClient";
-import { type JSX } from "react";
-import Writer from "./_components/Writer";
+import prismaClient from "@/lib/prisma-client";
+import { type Writer } from "@prisma/client";
+import WriterComponent from "./_components/writer";
 
 // 12 時間
 export const revalidate = 43200;
 
-export default async function Page(): Promise<JSX.Element> {
+const getWriters = async (): Promise<Writer[]> => {
   const writers = await prismaClient.writer.findMany({
     orderBy: {
       name: "asc",
     },
   });
 
-  return <Writer writers={writers} />;
+  return writers;
+};
+
+export default async function Page(): Promise<React.JSX.Element> {
+  const writers = await getWriters();
+
+  return <WriterComponent writers={writers} />;
 }

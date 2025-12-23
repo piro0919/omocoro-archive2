@@ -1,4 +1,4 @@
-.tabList {
+.nav {
   background: hsl(from var(--card) h s l);
   border-top: 1px solid hsl(from var(--border) h s l);
   display: flex;
@@ -6,7 +6,7 @@
   padding: 0 0 env(safe-area-inset-bottom);
 }
 
-.tab {
+.link {
   align-items: center;
   color: hsl(from var(--muted) h s l);
   display: flex;
@@ -15,6 +15,6 @@
   justify-content: center;
 }
 
-.active {
+.linkActive {
   color: hsl(from var(--active) h s l);
 }

@@ -1,5 +1,5 @@
 import env from "@/env";
-import prismaClient from "@/lib/prismaClient";
+import prismaClient from "@/lib/prisma-client";
 import * as cheerio from "cheerio";
 import { type Element } from "domhandler";
 import { type NextRequest, NextResponse } from "next/server";

@@ -1,292 +1,309 @@
 "use client";
+import fetcher from "@/lib/fetcher";
 import { type Article, type Category, type Writer } from "@prisma/client";
-import usePrevious from "@react-hook/previous";
-import { IconCircleXFilled } from "@tabler/icons-react";
+import { useGetCookie } from "cookies-next/client";
 import { format } from "date-fns";
 import Image from "next/image";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
-import { Fragment, type JSX, useEffect, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
+import queryString from "query-string";
+import React from "react";
+import { useBottomScrollListener } from "react-bottom-scroll-listener";
+import LinesEllipsis from "react-lines-ellipsis";
 import { TailSpin } from "react-loader-spinner";
 import useSWR from "swr";
-import { type StrictTupleKey } from "swr/_internal";
 import useSWRInfinite from "swr/infinite";
-import { useBoolean } from "usehooks-ts";
-import { fetchArticles, fetchArticlesCount } from "./actions";
+import uniqueObjects from "unique-objects";
+import { useWindowSize } from "usehooks-ts";
 import styles from "./style.module.css";
 
-export type AppProps = {
-  initialArticles: (Article & { category: Category; writers: Writer[] })[];
-  initialArticlesCount: number;
-};
+const getArticlesKey =
+  ({
+    category,
+    isNotMovie,
+    isNotOnigiri,
+    isNotRadio,
+    keyword,
+    order,
+    writer,
+  }: {
+    category: string;
+    isNotMovie: string;
+    isNotOnigiri: string;
+    isNotRadio: string;
+    keyword: string;
+    order: string;
+    writer: string;
+  }) =>
+  (
+    pageIndex: number,
+    previousPageData: (Article & { category: Category; writers: Writer[] })[],
+  ): null | string => {
+    if (previousPageData && !previousPageData.length) {
+      return null;
+    }
 
-export default function App({
-  initialArticles,
-  initialArticlesCount,
-}: AppProps): JSX.Element {
+    return queryString.stringifyUrl({
+      query: {
+        category,
+        isNotMovie,
+        isNotOnigiri,
+        isNotRadio,
+        keyword,
+        limit: 24,
+        order,
+        page: pageIndex,
+        writer,
+      },
+      url: "/api/articles",
+    });
+  };
+const getArticlesCountKey =
+  ({
+    category,
+    isNotMovie,
+    isNotOnigiri,
+    isNotRadio,
+    keyword,
+    writer,
+  }: {
+    category: string;
+    isNotMovie: string;
+    isNotOnigiri: string;
+    isNotRadio: string;
+    keyword: string;
+    writer: string;
+  }) =>
+  (): null | string => {
+    return queryString.stringifyUrl({
+      query: {
+        category,
+        isNotMovie,
+        isNotOnigiri,
+        isNotRadio,
+        keyword,
+        writer,
+      },
+      url: "/api/articles/count",
+    });
+  };
+
+export default function App(): React.JSX.Element {
   const [category, setCategory] = useQueryState(
     "category",
     parseAsString
       .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: false }),
+      .withOptions({ history: "push", scroll: true }),
   );
-  const [from, setFrom] = useQueryState(
-    "from",
-    parseAsString
-      .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: false }),
-  );
-  const [keyword, setKeyword] = useQueryState(
-    "keyword",
-    parseAsString
-      .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: false }),
-  );
-  const [order] = useQueryState(
-    "order",
-    parseAsStringLiteral(["asc", "desc"]).withDefault("desc"),
-  );
-  const [to, setTo] = useQueryState(
-    "to",
-    parseAsString
-      .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: false }),
-  );
+  const [keyword] = useQueryState("keyword", parseAsString.withDefault(""));
+  const [order, setOrder] = useQueryState("order", {
+    ...parseAsStringLiteral(["asc", "desc"]).withDefault("desc"),
+    clearOnDefault: false,
+    history: "push",
+    scroll: true,
+  });
   const [writer, setWriter] = useQueryState(
     "writer",
     parseAsString
       .withDefault("")
-      .withOptions({ history: "push", scroll: true, shallow: false }),
+      .withOptions({ history: "push", scroll: true }),
   );
-  const searchParamsObject = useMemo(
-    () => ({
+  const getCookie = useGetCookie();
+  const isNotOnigiri = getCookie("is-not-onigiri");
+  const isNotMovie = getCookie("is-not-movie");
+  const isNotRadio = getCookie("is-not-radio");
+  const {
+    data: articles = [],
+    isLoading,
+    isValidating,
+    setSize,
+  } = useSWRInfinite<(Article & { category: Category; writers: Writer[] })[]>(
+    getArticlesKey({
       category,
-      from,
+      isNotMovie: isNotMovie ?? "false",
+      isNotOnigiri: isNotOnigiri ?? "false",
+      isNotRadio: isNotRadio ?? "false",
       keyword,
       order,
-      to,
       writer,
     }),
-    [category, from, keyword, order, to, writer],
-  );
-  const { data: articlesCount = initialArticlesCount } = useSWR(
-    ["articlesCount", searchParamsObject],
-    async () => fetchArticlesCount({ category, from, keyword, to, writer }),
+    fetcher,
     {
-      dedupingInterval: 2000,
-      fallbackData: initialArticlesCount,
-      revalidateOnFocus: false,
+      revalidateFirstPage: false,
     },
   );
-  const getKey = (
-    pageIndex: number,
-    previousPageData: (Article & { category: Category; writers: Writer[] })[],
-  ): StrictTupleKey => {
-    if (previousPageData && !previousPageData.length) return null;
+  const { data: articlesCount = 0 } = useSWR<number>(
+    getArticlesCountKey({
+      category,
+      isNotMovie: isNotMovie ?? "false",
+      isNotOnigiri: isNotOnigiri ?? "false",
+      isNotRadio: isNotRadio ?? "false",
+      keyword,
+      writer,
+    }),
+  );
+  const { height, width } = useWindowSize();
 
-    return ["articles", searchParamsObject, pageIndex];
-  };
-  const { data, isValidating, setSize, size } = useSWRInfinite(
-    getKey,
-    async ([, , pageIndex]) =>
-      fetchArticles({
-        category,
-        from,
-        keyword,
-        order,
-        page: pageIndex as number,
-        to,
-        writer,
-      }),
+  useBottomScrollListener(
+    () => {
+      if (isValidating) {
+        return;
+      }
+
+      setSize((prevSize) => prevSize + 1);
+    },
     {
-      dedupingInterval: 2000,
-      fallbackData: [initialArticles],
-      revalidateAll: false,
-      revalidateFirstPage: true,
-      revalidateOnFocus: false,
+      offset: height,
     },
   );
-  const articles = useMemo(() => data ?? [], [data]);
-  const isLoadingMore = useMemo(
-    () => isValidating && size > 1,
-    [isValidating, size],
-  );
-  const hasNextPage = useMemo(() => {
-    const isEmpty = data?.[0]?.length === 0;
-    const isReachingEnd =
-      isEmpty || (data && data[data.length - 1]?.length === 0);
-
-    return !isReachingEnd;
-  }, [data]);
-  const { inView, ref } = useInView({
-    rootMargin: "100px 0px",
-    threshold: 0.1,
-  });
-  const allArticles = useMemo(() => articles.flat(), [articles]);
-  const prevAllArticles = usePrevious(allArticles);
-  const {
-    setFalse: offIsLoading,
-    setTrue: onIsLoading,
-    value: isLoading,
-  } = useBoolean(true);
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isLoadingMore) {
-      setSize(size + 1);
-    }
-  }, [inView, hasNextPage, isLoadingMore, setSize, size]);
-
-  useEffect(() => {
-    if (
-      JSON.stringify(allArticles.map(({ id }) => id)) ===
-      JSON.stringify(prevAllArticles?.map(({ id }) => id))
-    ) {
-      setTimeout(() => offIsLoading(), 1000);
-
-      return;
-    }
-
-    onIsLoading();
-  }, [allArticles, offIsLoading, onIsLoading, prevAllArticles]);
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.texts}>
-        {isLoading ? (
-          <TailSpin height={24} radius="1" visible={true} width={24} />
-        ) : null}
-        <p className={styles.count}>{`${articlesCount.toLocaleString()}件`}</p>
-        {category ? (
-          <button
-            onClick={() => {
-              setCategory("");
-            }}
-            className={styles.badge}
-          >
-            <span>{category}</span>
-            <IconCircleXFilled size={18} />
-          </button>
-        ) : null}
-        {writer ? (
-          <button
-            onClick={() => {
-              setWriter("");
-            }}
-            className={styles.badge}
-          >
-            <span>{writer}</span>
-            <IconCircleXFilled size={18} />
-          </button>
-        ) : null}
-        {from && to ? (
-          <button
-            onClick={() => {
-              setFrom("");
-              setTo("");
-            }}
-            className={styles.badge}
-          >
-            <span>{`${from.replaceAll("-", ".")} - ${to.replaceAll("-", ".")}`}</span>
-            <IconCircleXFilled size={18} />
-          </button>
-        ) : null}
-        {keyword
-          ? keyword.split(" ").map((v, index) => (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.texts}>
+          {isLoading || isValidating ? (
+            <TailSpin
+              color="#fe0000"
+              height={24}
+              radius="2"
+              visible={true}
+              width={24}
+            />
+          ) : null}
+          <div
+            className={styles.count}
+          >{`${articlesCount.toLocaleString()}件`}</div>
+          <div className={styles.metaButtons}>
+            {category ? (
               <button
                 onClick={() => {
-                  setKeyword(
-                    keyword
-                      .split(" ")
-                      .filter((w) => v !== w)
-                      .join(" "),
-                  );
+                  setCategory(null);
                 }}
-                className={styles.badge}
-                key={index}
+                className={styles.button}
               >
-                <span>{v}</span>
-                <IconCircleXFilled size={18} />
+                {category}
               </button>
-            ))
-          : null}
+            ) : null}
+            {writer ? (
+              <button
+                onClick={() => {
+                  setWriter(null);
+                }}
+                className={styles.button}
+              >
+                {writer}
+              </button>
+            ) : null}
+          </div>
+        </div>
+        <div className={styles.buttons}>
+          <button
+            onClick={() => {
+              setOrder("desc");
+            }}
+            className={styles.button}
+            disabled={order === "desc"}
+          >
+            新しい順
+          </button>
+          <button
+            onClick={() => {
+              setOrder("asc");
+            }}
+            className={styles.button}
+            disabled={order === "asc"}
+          >
+            古い順
+          </button>
+        </div>
       </div>
       <ul className={styles.list}>
-        {allArticles.map(
-          ({
-            category: { name: categoryName },
-            id,
-            publishedAt,
-            thumbnail,
-            title,
-            url,
-            writers,
-          }) => (
-            <li className={styles.item} key={id}>
-              <a href={url} target="_blank">
-                <div className={styles.thumbnail}>
-                  <Image
-                    style={{
-                      objectFit: "cover",
-                    }}
-                    alt={title}
-                    decoding="async"
-                    fill={true}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    src={`/api/proxy?url=${encodeURIComponent(thumbnail)}`}
+        {(
+          uniqueObjects(articles.flat(), ["url"]) as (Article & {
+            category: Category;
+            writers: Writer[];
+          })[]
+        ).map((article) => (
+          <li className={styles.item} key={article.id}>
+            <a
+              className={styles.link}
+              href={article.url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <div className={styles.thumbnail}>
+                <Image
+                  alt={article.title}
+                  className={styles.image}
+                  fill={true}
+                  src={`/api/proxy?url=${encodeURIComponent(article.thumbnail)}`}
+                />
+              </div>
+              <div className={styles.detail}>
+                <div className={styles.title}>
+                  <LinesEllipsis
+                    basedOn="letters"
+                    ellipsis="..."
+                    maxLine="2"
+                    text={article.title}
+                    trimRight={true}
+                    winWidth={width}
                   />
                 </div>
-              </a>
-              <div className={styles.detail}>
-                <a href={url} target="_blank">
-                  <span className={styles.title}>{title}</span>
-                </a>
                 <div className={styles.meta}>
-                  <div>
-                    <span
-                      onClick={() => {
-                        setCategory(categoryName);
+                  <div className={styles.metaButtons}>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        setCategory(
+                          article.category.name === category
+                            ? null
+                            : article.category.name,
+                        );
                       }}
                       className={styles.category}
                     >
-                      {categoryName}
-                    </span>
-                    {publishedAt && (
-                      <>
-                        {" / "}
-                        <span>{format(publishedAt, "yyyy.MM.dd")}</span>
-                      </>
-                    )}
-                  </div>
-                  <div>
-                    {writers.map(({ id, name }, index) => (
-                      <Fragment key={id}>
-                        {index > 0 && "・"}
-                        <span
-                          onClick={() => {
-                            setWriter(name);
+                      {article.category.name}
+                    </button>
+                    {article.writers
+                      .map((writer) => writer.name)
+                      .map((name) => (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+
+                            setWriter(name === writer ? null : name);
                           }}
                           className={styles.writer}
+                          key={name}
                         >
                           {name}
-                        </span>
-                      </Fragment>
-                    ))}
+                        </button>
+                      ))}
+                  </div>
+                  <div className={styles.publishedAt}>
+                    {format(article.publishedAt!, "yyyy.MM.dd")}
                   </div>
                 </div>
               </div>
-            </li>
-          ),
-        )}
+            </a>
+          </li>
+        ))}
       </ul>
-      <div className={styles.loading} ref={ref}>
-        {hasNextPage && isLoadingMore ? (
-          <TailSpin height={45} radius="1" visible={true} width={45} />
-        ) : null}
-        {!hasNextPage ? (
-          <p className={styles.completed}>すべての記事を読み込みました</p>
-        ) : null}
-      </div>
+      {(articles.at(-1)?.length === 0 ||
+        articlesCount === articles.flat().length) &&
+      !isValidating &&
+      !isLoading ? (
+        <p className={styles.completed}>すべての記事を読み込みました</p>
+      ) : (
+        <TailSpin
+          color="#fe0000"
+          height={24}
+          radius="2"
+          visible={true}
+          width={24}
+        />
+      )}
     </div>
   );
 }

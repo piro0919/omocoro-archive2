@@ -1,23 +1,24 @@
 .container {
   margin: 0 auto;
   padding: min(12px, 2dvw);
-  width: min(100%, 1280px);
+  width: min(100%, 640px);
 }
 
-.list {
+.inner {
   display: grid;
   gap: min(12px, 2dvw);
-  grid-template: auto / repeat(auto-fill, minmax(180px, 1fr));
 }
 
-.link {
+.label {
+  align-items: center;
   background: hsl(from var(--card) h s l);
   border: 1px solid hsl(from var(--border) h s l / 0.5);
-  display: block;
-  padding: 12px 6px;
-  text-align: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: min(12px, 2dvw);
 }
 
-.name {
+.labelText {
   font-size: 1.4rem;
 }

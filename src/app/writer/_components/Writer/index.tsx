@@ -1,30 +1,32 @@
-import { type Writer as WriterType } from "@prisma/client";
+"use client";
+import { type Writer } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { type JSX } from "react";
 import styles from "./style.module.css";
 
-export type WriterProps = {
-  writers: WriterType[];
-};
+export type WriterProps = Readonly<{
+  writers: Writer[];
+}>;
 
-export default function Writer({ writers }: WriterProps): JSX.Element {
+export default function Writer({ writers }: WriterProps): React.JSX.Element {
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.container}>
       <ul className={styles.list}>
-        {writers.map(({ avatarUrl, id, name }) => (
-          <li key={id}>
-            <Link className={styles.link} href={`/?writer=${name}`}>
-              <Image
-                alt={name}
-                decoding="async"
-                height={45}
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                src={`/api/proxy?url=${encodeURIComponent(avatarUrl)}`}
-                width={45}
-              />
-              <span className={styles.name}>{name}</span>
+        {writers.map((writer) => (
+          <li key={writer.id}>
+            <Link className={styles.link} href={`/?writer=${writer.name}`}>
+              <div className={styles.imageContainer}>
+                <Image
+                  alt={writer.name}
+                  className={styles.image}
+                  decoding="async"
+                  fill={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  src={`/api/proxy?url=${encodeURIComponent(writer.avatarUrl)}`}
+                />
+              </div>
+              <div className={styles.name}>{writer.name}</div>
             </Link>
           </li>
         ))}

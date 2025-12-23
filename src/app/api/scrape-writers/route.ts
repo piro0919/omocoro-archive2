@@ -1,4 +1,4 @@
-import prismaClient from "@/lib/prismaClient";
+import prismaClient from "@/lib/prisma-client";
 import * as cheerio from "cheerio";
 import { NextResponse } from "next/server";
 

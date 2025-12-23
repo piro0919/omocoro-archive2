@@ -1,23 +1,46 @@
-import { type Category as CategoryType } from "@prisma/client";
+"use client";
+import { type Category } from "@prisma/client";
+import { useGetCookie } from "cookies-next/client";
 import Link from "next/link";
-import { type JSX } from "react";
+import React from "react";
 import styles from "./style.module.css";
 
-export type CategoryProps = {
-  categories: CategoryType[];
-};
+export type CategoryProps = Readonly<{
+  categories: Category[];
+}>;
 
-export default function Category({ categories }: CategoryProps): JSX.Element {
+export default function Category({
+  categories,
+}: CategoryProps): React.JSX.Element {
+  const getCookie = useGetCookie();
+  const isNotOnigiri = getCookie("is-not-onigiri");
+  const isNotMovie = getCookie("is-not-movie");
+  const isNotRadio = getCookie("is-not-radio");
+  const excludeCategories = [
+    ...(isNotMovie === "true"
+      ? ["オモコロチャンネル", "ふっくらすずめクラブ"]
+      : []),
+    ...(isNotRadio === "true" ? ["限定ラジオ", "ラジオ"] : []),
+  ];
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.container}>
       <ul className={styles.list}>
-        {categories.map(({ id, name }) => (
-          <li key={id}>
-            <Link className={styles.link} href={`/?category=${name}`}>
-              <span className={styles.name}>{name}</span>
-            </Link>
-          </li>
-        ))}
+        {categories
+          .filter((category) => !excludeCategories.includes(category.name))
+          .filter((category) =>
+            isNotOnigiri === "true" ? !category.isOnigiri : true,
+          )
+          .map((category) => (
+            <li key={category.id}>
+              <Link
+                className={styles.link}
+                href={`/?category=${category.name}`}
+              >
+                <div className={styles.name}>{category.name}</div>
+              </Link>
+            </li>
+          ))}
       </ul>
     </div>
   );

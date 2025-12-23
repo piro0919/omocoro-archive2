@@ -1,4 +1,4 @@
-.wrapper {
+.container {
   margin: 0 auto;
   padding: min(12px, 2dvw);
   width: min(100%, 1280px);
@@ -13,12 +13,21 @@
 .link {
   align-items: center;
   background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l / 0.5);
   display: flex;
   gap: 12px;
-  padding: 0 12px 0 0;
+  padding: 6px;
+}
+
+.imageContainer {
+  aspect-ratio: 1;
+  border-radius: 50dvmax;
+  height: 45px;
+  overflow: hidden;
+  position: relative;
 }
 
 .name {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   line-height: 1.25;
 }

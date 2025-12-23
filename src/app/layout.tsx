@@ -1,18 +1,12 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { type Metadata, type Viewport } from "next";
+import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Noto_Sans_JP as NotoSansJP } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import "react-tabs/style/react-tabs.css";
 import { type JSX, type ReactNode } from "react";
-import "./globals.css";
-import "@szhsin/react-menu/dist/index.css";
-import "@szhsin/react-menu/dist/transitions/zoom.css";
-import "@szhsin/react-menu/dist/theme-dark.css";
-import "pretty-checkbox/dist/pretty-checkbox.min.css";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
-import Layout from "./_components/Layout";
-import type { Metadata, Viewport } from "next";
+import "react-toggle/style.css";
+import Layout from "./_components/layout";
 
 const notoSansJP = NotoSansJP({ subsets: ["latin"] });
 const APP_NAME = "オモコロアーカイブ";

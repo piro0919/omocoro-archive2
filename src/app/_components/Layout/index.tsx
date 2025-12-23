@@ -1,69 +1,64 @@
 "use client";
+import fetcher from "@/lib/fetcher";
+import { ProgressProvider } from "@bprogress/next/app";
 import dynamic from "next/dynamic";
-import {
-  type JSX,
-  type PropsWithChildren,
-  Suspense,
-  useEffect,
-  useState,
-} from "react";
+import { type ReactNode } from "react";
+import { SWRConfig } from "swr";
 import useShowWindowSize from "use-show-window-size";
-import { useBoolean } from "usehooks-ts";
-import Footer from "../Footer";
-import Header from "../Header";
-import MobileNavigation from "../MobileNavigation";
+import Footer from "../footer";
+import Header from "../header";
+import MobileMenu from "../mobile-menu";
 import styles from "./style.module.css";
 
 const PWAPrompt = dynamic(async () => import("react-ios-pwa-prompt"), {
   ssr: false,
 });
 
-export default function Layout({ children }: PropsWithChildren): JSX.Element {
-  const { setValue: setIsVisible, value: isVisible } = useBoolean(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+export type LayoutProps = Readonly<{
+  children: ReactNode;
+}>;
 
-  useEffect(() => {
-    const handleScroll = (): void => {
-      const currentScrollY = window.scrollY;
-
-      // 上にスクロールしたときは表示、下にスクロールしたときは非表示
-      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 50);
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return (): void => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [lastScrollY, setIsVisible]);
-
+export default function Layout({ children }: LayoutProps): React.JSX.Element {
   useShowWindowSize({
     disable: process.env.NODE_ENV === "production",
   });
 
   return (
-    <Suspense fallback={null}>
-      <div
-        className={`${styles.header} ${!isVisible ? styles.headerHidden : ""}`}
+    <SWRConfig
+      value={{
+        fetcher,
+        keepPreviousData: true,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        shouldRetryOnError: false,
+      }}
+    >
+      <ProgressProvider
+        color="#fe0000"
+        height="2px"
+        options={{ showSpinner: true }}
+        shallowRouting={true}
       >
-        <Header />
-      </div>
-      <main className={styles.main}>{children}</main>
-      <div className={styles.footer}>
-        <Footer />
-      </div>
-      <div className={styles.mobileNavigation}>
-        <MobileNavigation />
-      </div>
-      <PWAPrompt
-        appIconPath="/icon-512x512.png"
-        copyAddToHomeScreenStep="2) 「ホーム画面に追加」をタップします。"
-        copyDescription="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンおよびオフラインで使用できます。"
-        copyShareStep="1) （四角から矢印が飛び出したマーク）をタップします。"
-        copyTitle="ホーム画面に追加"
-        // isShown={true}
-      />
-    </Suspense>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <Header />
+          </div>
+          <main className={styles.main}>{children}</main>
+          <div className={styles.footer}>
+            <Footer />
+          </div>
+          <div className={styles.mobileMenu}>
+            <MobileMenu />
+          </div>
+        </div>
+        <PWAPrompt
+          appIconPath="/icon-512x512.png"
+          copyAddToHomeScreenStep="2) 「ホーム画面に追加」をタップします。"
+          copyDescription="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンおよびオフラインで使用できます。"
+          copyShareStep="1) （四角から矢印が飛び出したマーク）をタップします。"
+          copyTitle="ホーム画面に追加"
+        />
+      </ProgressProvider>
+    </SWRConfig>
   );
 }
