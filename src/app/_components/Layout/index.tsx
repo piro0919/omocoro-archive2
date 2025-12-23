@@ -5,9 +5,9 @@ import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 import { SWRConfig } from "swr";
 import useShowWindowSize from "use-show-window-size";
-import Footer from "../footer";
-import Header from "../header";
-import MobileMenu from "../mobile-menu";
+import Footer from "../Footer";
+import Header from "../Header";
+import MobileMenu from "../MobileMenu";
 import styles from "./style.module.css";
 
 const PWAPrompt = dynamic(async () => import("react-ios-pwa-prompt"), {

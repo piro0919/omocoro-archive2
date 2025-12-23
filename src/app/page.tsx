@@ -1,4 +1,4 @@
-import App from "./_components/app";
+import App from "./_components/App";
 
 // 12 時間
 export const revalidate = 43200;
