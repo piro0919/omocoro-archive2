@@ -20,6 +20,9 @@ const compat = new FlatCompat({
 });
 const eslintConfig = [
   {
+    ignores: ["next-sitemap.config.js"],
+  },
+  {
     files: ["**/*.{js,jsx,ts,tsx,mjs}"],
   },
   ...compat.extends(

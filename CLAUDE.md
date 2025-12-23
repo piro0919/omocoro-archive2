@@ -113,3 +113,37 @@ Uses conventional commits with additional rules:
 - Uses React 19 with backwards compatibility overrides
 - Service worker disabled in development mode
 - PWA installability supported with proper manifest
+
+## Package Installation Rules
+
+パッケージをインストールする前に、必ず以下を実行すること：
+
+1. `npm info <package>` でパッケージの用途を確認
+2. dependencies か devDependencies かを判断し、根拠とともにユーザーに提示
+3. ユーザーの承認を得てからインストール
+
+### 判断基準
+
+**devDependencies** (`--save-dev`):
+
+- ビルドツール（next-sitemap, webpack等）
+- リンター/フォーマッター（eslint, prettier, stylelint）
+- 型定義（@types/\*）
+- テストツール（jest, vitest）
+
+**dependencies**:
+
+- ランタイムで使用するライブラリ
+- フレームワーク（next, react）
+- UIコンポーネント
+
+## Configuration Rules
+
+設定ファイルを作成・編集する際、以下の値は推測せずユーザーに確認すること：
+
+- URL（siteUrl、APIエンドポイント等）
+- APIキー、シークレット
+- 環境固有の設定値
+- ポート番号、ホスト名
+
+これらの値を設定する前に、必ずユーザーに確認を取る。
