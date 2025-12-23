@@ -6,7 +6,9 @@
       "Bash(npm run build:*)",
       "Bash(npm run depcheck:*)",
       "Bash(npm uninstall @react-hook/previous @szhsin/react-menu date-fns-tz next-client-cookies pretty-checkbox pretty-checkbox-react react-date-range react-intersection-observer react-modal react-spacer react-tabs universal-cookie use-pwa @types/react-date-range @types/react-modal)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npm info:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }
