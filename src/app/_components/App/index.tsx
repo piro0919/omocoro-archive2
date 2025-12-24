@@ -19,19 +19,23 @@ import styles from "./style.module.css";
 const getArticlesKey =
   ({
     category,
+    from,
     isNotMovie,
     isNotOnigiri,
     isNotRadio,
     keyword,
     order,
+    to,
     writer,
   }: {
     category: string;
+    from: string;
     isNotMovie: string;
     isNotOnigiri: string;
     isNotRadio: string;
     keyword: string;
     order: string;
+    to: string;
     writer: string;
   }) =>
   (
@@ -45,6 +49,7 @@ const getArticlesKey =
     return queryString.stringifyUrl({
       query: {
         category,
+        from,
         isNotMovie,
         isNotOnigiri,
         isNotRadio,
@@ -52,6 +57,7 @@ const getArticlesKey =
         limit: 24,
         order,
         page: pageIndex,
+        to,
         writer,
       },
       url: "/api/articles",
@@ -60,27 +66,33 @@ const getArticlesKey =
 const getArticlesCountKey =
   ({
     category,
+    from,
     isNotMovie,
     isNotOnigiri,
     isNotRadio,
     keyword,
+    to,
     writer,
   }: {
     category: string;
+    from: string;
     isNotMovie: string;
     isNotOnigiri: string;
     isNotRadio: string;
     keyword: string;
+    to: string;
     writer: string;
   }) =>
   (): null | string => {
     return queryString.stringifyUrl({
       query: {
         category,
+        from,
         isNotMovie,
         isNotOnigiri,
         isNotRadio,
         keyword,
+        to,
         writer,
       },
       url: "/api/articles/count",
@@ -111,6 +123,8 @@ export default function App({ initialArticles }: AppProps): React.JSX.Element {
       .withDefault("")
       .withOptions({ history: "push", scroll: true }),
   );
+  const [from] = useQueryState("from", parseAsString.withDefault(""));
+  const [to] = useQueryState("to", parseAsString.withDefault(""));
   const getCookie = useGetCookie();
   const isNotOnigiri = getCookie("is-not-onigiri");
   const isNotMovie = getCookie("is-not-movie");
@@ -123,11 +137,13 @@ export default function App({ initialArticles }: AppProps): React.JSX.Element {
   } = useSWRInfinite<(Article & { category: Category; writers: Writer[] })[]>(
     getArticlesKey({
       category,
+      from,
       isNotMovie: isNotMovie ?? "false",
       isNotOnigiri: isNotOnigiri ?? "false",
       isNotRadio: isNotRadio ?? "false",
       keyword,
       order,
+      to,
       writer,
     }),
     fetcher,
@@ -138,10 +154,12 @@ export default function App({ initialArticles }: AppProps): React.JSX.Element {
   const { data: articlesCount = 0 } = useSWR<number>(
     getArticlesCountKey({
       category,
+      from,
       isNotMovie: isNotMovie ?? "false",
       isNotOnigiri: isNotOnigiri ?? "false",
       isNotRadio: isNotRadio ?? "false",
       keyword,
+      to,
       writer,
     }),
   );
@@ -221,7 +239,7 @@ export default function App({ initialArticles }: AppProps): React.JSX.Element {
         </div>
       </div>
       <ul className={styles.list}>
-        {(articles.flat().length > 0
+        {(articles.flat().length > 0 || !isValidating
           ? (uniqueObjects(articles.flat(), ["url"]) as (Article & {
               category: Category;
               writers: Writer[];

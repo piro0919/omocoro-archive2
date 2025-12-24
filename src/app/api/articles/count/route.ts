@@ -5,10 +5,12 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest): Promise<NextResponse<number>> {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
+  const from = searchParams.get("from");
   const isNotMovie = searchParams.get("isNotMovie");
   const isNotOnigiri = searchParams.get("isNotOnigiri");
   const isNotRadio = searchParams.get("isNotRadio");
   const keyword = searchParams.get("keyword");
+  const to = searchParams.get("to");
   const writer = searchParams.get("writer");
   const excludeCategories = [
     ...(isNotMovie === "true"
@@ -49,6 +51,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<number>> {
             mode: "insensitive" as const,
           },
         })),
+        ...[
+          {
+            publishedAt: {
+              gte: from ? new Date(from) : undefined,
+              lte: to ? new Date(to) : undefined,
+            },
+          },
+        ],
         ...[
           {
             writers: {

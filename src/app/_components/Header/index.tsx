@@ -20,10 +20,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { parseAsString, useQueryState } from "nuqs";
-import { type RefObject, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { type RefObject, useEffect, useRef, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { useOnClickOutside } from "usehooks-ts";
 import z from "zod";
+import MobileDateRange from "../MobileDateRange";
+import MobileSearch from "../MobileSearch";
 import styles from "./style.module.css";
 
 const schema = z.object({
@@ -40,12 +42,13 @@ export default function Header(): React.JSX.Element {
       .withDefault("")
       .withOptions({ history: "push", scroll: true }),
   );
-  const { handleSubmit, register } = useForm<Schema>({
+  const methods = useForm<Schema>({
     defaultValues: {
       keyword,
     },
     resolver: zodResolver(schema),
   });
+  const { handleSubmit, register, setValue } = methods;
   const [isOpen, setIsOpen] = useState(false);
   const arrowRef = useRef(null);
   const { context, floatingStyles, refs } = useFloating({
@@ -63,8 +66,42 @@ export default function Header(): React.JSX.Element {
   const handleClickOutside = (): void => {
     setIsOpen(false);
   };
+  const [from, setFrom] = useQueryState(
+    "from",
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true }),
+  );
+  const [to, setTo] = useQueryState(
+    "to",
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true }),
+  );
+  const [fromDate, setFromDate] = useState<string>(from ?? "");
+  const [toDate, setToDate] = useState<string>(to ?? "");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const ref2 = useRef<HTMLDivElement>(null);
+  const ref3 = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(ref as RefObject<HTMLElement>, handleClickOutside);
+  useOnClickOutside(ref2 as RefObject<HTMLElement>, () =>
+    setIsMobileSearchOpen(false),
+  );
+  useOnClickOutside(ref3 as RefObject<HTMLElement>, () => setIsOpen(false));
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+
+    setFrom(fromDate);
+    setTo(toDate);
+  }, [fromDate, isOpen, setFrom, setTo, toDate]);
+
+  useEffect(() => {
+    setValue("keyword", keyword);
+  }, [keyword, setValue]);
 
   return (
     <>
@@ -128,11 +165,24 @@ export default function Header(): React.JSX.Element {
           ) : null}
           {pathname === "/" ? (
             <div className={styles.buttons}>
-              <button className={styles.searchButton}>
+              <button
+                className={styles.searchButton}
+                onClick={() => setIsMobileSearchOpen(true)}
+              >
                 <IconSearch size={21} />
               </button>
               <div ref={ref}>
-                <button ref={refs.setReference} {...getReferenceProps()}>
+                <button
+                  className={styles.mobileCalendarButton}
+                  onClick={() => setIsOpen(true)}
+                >
+                  <IconCalendar size={21} />
+                </button>
+                <button
+                  className={styles.calendarButton}
+                  ref={refs.setReference}
+                  {...getReferenceProps()}
+                >
                   <IconCalendar size={21} />
                 </button>
                 {isOpen ? (
@@ -149,9 +199,30 @@ export default function Header(): React.JSX.Element {
                       stroke="hsl(from var(--border) h s l)"
                       strokeWidth={1}
                     />
-                    <input className={styles.input} type="date" />
+                    <input
+                      className={styles.input}
+                      onChange={(e) => setFromDate(e.target.value)}
+                      type="date"
+                      value={fromDate}
+                    />
                     <span className={styles.separator}>〜</span>
-                    <input className={styles.input} type="date" />
+                    <input
+                      className={styles.input}
+                      onChange={(e) => setToDate(e.target.value)}
+                      type="date"
+                      value={toDate}
+                    />
+                    <button
+                      onClick={() => {
+                        setFromDate("");
+                        setToDate("");
+                      }}
+                      className={styles.clearButton2}
+                      disabled={!fromDate && !toDate}
+                      type="button"
+                    >
+                      <IconX size={18} />
+                    </button>
                   </div>
                 ) : null}
               </div>
@@ -188,6 +259,56 @@ export default function Header(): React.JSX.Element {
             </Link>
           </nav>
         </div>
+        {pathname === "/" ? (
+          <motion.div
+            transition={{
+              ease: "easeInOut",
+            }}
+            variants={{
+              active: {
+                y: -60,
+              },
+              inactive: {
+                y: -120,
+              },
+            }}
+            animate={isMobileSearchOpen ? "active" : "inactive"}
+            className={styles.mobileSearch}
+            initial="inactive"
+            ref={ref2}
+          >
+            <FormProvider {...methods}>
+              <MobileSearch onClose={() => setIsMobileSearchOpen(false)} />
+            </FormProvider>
+          </motion.div>
+        ) : null}
+        {pathname === "/" ? (
+          <motion.div
+            transition={{
+              ease: "easeInOut",
+            }}
+            variants={{
+              active: {
+                y: -60,
+              },
+              inactive: {
+                y: -120,
+              },
+            }}
+            animate={isOpen ? "active" : "inactive"}
+            className={styles.mobileDateRange}
+            initial="inactive"
+            ref={ref3}
+          >
+            <MobileDateRange
+              fromDate={fromDate}
+              onClose={() => setIsOpen(false)}
+              setFromDate={setFromDate}
+              setToDate={setToDate}
+              toDate={toDate}
+            />
+          </motion.div>
+        ) : null}
       </header>
     </>
   );

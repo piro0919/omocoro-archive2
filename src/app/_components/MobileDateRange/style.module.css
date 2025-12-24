@@ -1,0 +1,44 @@
+.container {
+  background: hsl(from var(--card) h s l);
+  height: 60px;
+}
+
+.inner {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: auto 1fr;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 min(12px, 2dvw);
+  width: min(100%, 1280px);
+}
+
+.dateRange {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.separator {
+  font-size: 1.4rem;
+}
+
+.input {
+  border: 1px solid hsl(from var(--border) h s l);
+  border-radius: 6px;
+  font-size: 1.4rem;
+  padding: 6px 12px;
+}
+
+.clearButton2 {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.clearButton2:disabled {
+  opacity: 0.5;
+}

@@ -1,0 +1,58 @@
+import { IconArrowLeft, IconSearch, IconX } from "@tabler/icons-react";
+import { parseAsString, useQueryState } from "nuqs";
+import { useFormContext } from "react-hook-form";
+import styles from "./style.module.css";
+
+export type MobileSearchProps = Readonly<{
+  onClose: () => void;
+}>;
+
+export default function MobileSearch({
+  onClose,
+}: MobileSearchProps): React.JSX.Element {
+  const [keyword, setKeyword] = useQueryState(
+    "keyword",
+    parseAsString
+      .withDefault("")
+      .withOptions({ history: "push", scroll: true }),
+  );
+  const { handleSubmit, register } = useFormContext();
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.inner}>
+        <button onClick={onClose}>
+          <IconArrowLeft size={24} />
+        </button>
+        <form
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onSubmit={handleSubmit((data) => {
+            setKeyword(data.keyword.replace(/\s+/g, " ").trim());
+          })}
+        >
+          <div className={styles.searchContainer}>
+            <input
+              {...register("keyword")}
+              className={styles.searchInput}
+              placeholder="記事を検索"
+              type="text"
+            />
+            <button
+              onClick={() => {
+                setKeyword("");
+              }}
+              className={styles.clearButton}
+              disabled={!keyword}
+              type="button"
+            >
+              <IconX size={18} />
+            </button>
+            <button className={styles.submitButton} type="submit">
+              <IconSearch size={18} />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

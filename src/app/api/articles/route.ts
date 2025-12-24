@@ -10,6 +10,7 @@ export async function GET(
 > {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
+  const from = searchParams.get("from");
   const isNotMovie = searchParams.get("isNotMovie");
   const isNotOnigiri = searchParams.get("isNotOnigiri");
   const isNotRadio = searchParams.get("isNotRadio");
@@ -17,6 +18,7 @@ export async function GET(
   const limit = searchParams.get("limit");
   const order = searchParams.get("order");
   const page = searchParams.get("page");
+  const to = searchParams.get("to");
   const writer = searchParams.get("writer");
   const excludeCategories = [
     ...(isNotMovie === "true"
@@ -66,6 +68,14 @@ export async function GET(
             mode: "insensitive" as const,
           },
         })),
+        ...[
+          {
+            publishedAt: {
+              gte: from ? new Date(from) : undefined,
+              lte: to ? new Date(to) : undefined,
+            },
+          },
+        ],
         ...[
           {
             writers: {
