@@ -13,7 +13,7 @@ export default function Writer({ writers }: WriterProps): React.JSX.Element {
     <div className={styles.container}>
       <ul className={styles.list}>
         {writers.map((writer) => (
-          <li key={writer.id}>
+          <li className={styles.item} key={writer.id}>
             <Link className={styles.link} href={`/?writer=${writer.name}`}>
               <div className={styles.imageContainer}>
                 <Image

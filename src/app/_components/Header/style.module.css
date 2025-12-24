@@ -1,5 +1,6 @@
 .header {
-  background: hsl(from var(--card) h s l);
+  backdrop-filter: blur(1px);
+  background: hsl(from var(--card) h s l / 0.95);
   border-bottom: 1px solid hsl(from var(--border) h s l);
   height: 60px;
   position: relative;
@@ -34,6 +35,7 @@
 
 .searchContainer {
   align-items: center;
+  background: hsl(from var(--card) h s l);
   border: 1px solid hsl(from var(--border) h s l);
   border-radius: 50dvmax;
   display: grid;
@@ -118,4 +120,24 @@
 
 .navLinkText {
   font-size: 1.4rem;
+}
+
+.floating {
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
+  border-radius: 6px;
+  padding: 12px;
+  top: 12px !important;
+}
+
+.separator {
+  font-size: 1.4rem;
+  padding: 0 6px;
+}
+
+.input {
+  border: 1px solid hsl(from var(--border) h s l);
+  border-radius: 6px;
+  font-size: 1.4rem;
+  padding: 6px 12px;
 }

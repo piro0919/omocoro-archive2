@@ -7,7 +7,7 @@
 .list {
   display: grid;
   gap: min(12px, 2dvw);
-  grid-template: auto / repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }
 
 .link {
@@ -22,7 +22,7 @@
 .imageContainer {
   aspect-ratio: 1;
   border-radius: 50dvmax;
-  height: 45px;
+  height: 42px;
   overflow: hidden;
   position: relative;
 }
