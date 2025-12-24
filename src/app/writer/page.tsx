@@ -1,8 +1,15 @@
 import prismaClient from "@/lib/prisma-client";
-import WriterComponent, { type WriterWithCount } from "./_components/Writer";
+import { type Writer } from "@prisma/client";
+import WriterComponent from "./_components/Writer";
 
 // 12 時間
 export const revalidate = 43200;
+
+type WriterWithCount = Writer & {
+  _count: {
+    articles: number;
+  };
+};
 
 const getWriters = async (): Promise<WriterWithCount[]> => {
   const writers = await prismaClient.writer.findMany({

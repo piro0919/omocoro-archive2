@@ -5,8 +5,19 @@ import CategoryComponent from "./_components/Category";
 // 12 時間
 export const revalidate = 43200;
 
-const getCategories = async (): Promise<Category[]> => {
+type CategoryWithCount = Category & {
+  _count: {
+    articles: number;
+  };
+};
+
+const getCategories = async (): Promise<CategoryWithCount[]> => {
   const categories = await prismaClient.category.findMany({
+    include: {
+      _count: {
+        select: { articles: true },
+      },
+    },
     orderBy: {
       name: "asc",
     },

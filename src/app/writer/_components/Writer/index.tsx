@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import styles from "./style.module.css";
 
-export type WriterWithCount = Writer & {
+type WriterWithCount = Writer & {
   _count: {
     articles: number;
   };

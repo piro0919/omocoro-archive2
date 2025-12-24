@@ -5,8 +5,14 @@ import Link from "next/link";
 import React from "react";
 import styles from "./style.module.css";
 
+type CategoryWithCount = Category & {
+  _count: {
+    articles: number;
+  };
+};
+
 export type CategoryProps = Readonly<{
-  categories: Category[];
+  categories: CategoryWithCount[];
 }>;
 
 export default function Category({
@@ -38,6 +44,9 @@ export default function Category({
                 href={`/?category=${category.name}`}
               >
                 <div className={styles.name}>{category.name}</div>
+                <div className={styles.count}>
+                  {category._count.articles.toLocaleString()} 本
+                </div>
               </Link>
             </li>
           ))}
