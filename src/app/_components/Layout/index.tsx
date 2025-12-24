@@ -1,8 +1,10 @@
 "use client";
 import fetcher from "@/lib/fetcher";
 import { ProgressProvider } from "@bprogress/next/app";
+import { IconArrowUp } from "@tabler/icons-react";
 import dynamic from "next/dynamic";
 import { type ReactNode, Suspense } from "react";
+import ScrollToTop from "react-scroll-to-top";
 import { SWRConfig } from "swr";
 import useShowWindowSize from "use-show-window-size";
 import Footer from "../Footer";
@@ -53,6 +55,11 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
             <MobileMenu />
           </div>
         </div>
+        <ScrollToTop
+          className={styles.scrollToTop}
+          component={<IconArrowUp size={24} />}
+          smooth={false}
+        />
         <PWAPrompt
           appIconPath="/icon-512x512.png"
           copyAddToHomeScreenStep="2) 「ホーム画面に追加」をタップします。"

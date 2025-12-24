@@ -33,3 +33,16 @@
     display: none;
   }
 }
+
+.scrollToTop {
+  background-color: hsl(from var(--card) h s l) !important;
+  border: 1px solid hsl(from var(--border) h s l) !important;
+  box-shadow: none !important;
+  color: hsl(from var(--foreground) h s l) !important;
+  inset: auto 0 0 auto !important;
+  margin: min(18px, 2dvw);
+
+  @media (width < 740px) {
+    bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+  }
+}
