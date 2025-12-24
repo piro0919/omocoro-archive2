@@ -148,6 +148,7 @@
   gap: 6px;
   padding: 12px;
   top: 12px !important;
+  z-index: 100;
 
   @media (width < 740px) {
     display: none;

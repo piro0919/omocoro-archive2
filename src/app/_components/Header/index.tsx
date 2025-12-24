@@ -81,6 +81,7 @@ export default function Header(): React.JSX.Element {
   const [fromDate, setFromDate] = useState<string>(from ?? "");
   const [toDate, setToDate] = useState<string>(to ?? "");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isMobileDateRangeOpen, setIsMobileDateRangeOpen] = useState(false);
   const ref2 = useRef<HTMLDivElement>(null);
   const ref3 = useRef<HTMLDivElement>(null);
 
@@ -88,16 +89,18 @@ export default function Header(): React.JSX.Element {
   useOnClickOutside(ref2 as RefObject<HTMLElement>, () =>
     setIsMobileSearchOpen(false),
   );
-  useOnClickOutside(ref3 as RefObject<HTMLElement>, () => setIsOpen(false));
+  useOnClickOutside(ref3 as RefObject<HTMLElement>, () =>
+    setIsMobileDateRangeOpen(false),
+  );
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen || isMobileDateRangeOpen) {
       return;
     }
 
     setFrom(fromDate);
     setTo(toDate);
-  }, [fromDate, isOpen, setFrom, setTo, toDate]);
+  }, [fromDate, isMobileDateRangeOpen, isOpen, setFrom, setTo, toDate]);
 
   useEffect(() => {
     setValue("keyword", keyword);
@@ -174,7 +177,7 @@ export default function Header(): React.JSX.Element {
               <div ref={ref}>
                 <button
                   className={styles.mobileCalendarButton}
-                  onClick={() => setIsOpen(true)}
+                  onClick={() => setIsMobileDateRangeOpen(true)}
                 >
                   <IconCalendar size={21} />
                 </button>
@@ -295,14 +298,14 @@ export default function Header(): React.JSX.Element {
                 y: -120,
               },
             }}
-            animate={isOpen ? "active" : "inactive"}
+            animate={isMobileDateRangeOpen ? "active" : "inactive"}
             className={styles.mobileDateRange}
             initial="inactive"
             ref={ref3}
           >
             <MobileDateRange
               fromDate={fromDate}
-              onClose={() => setIsOpen(false)}
+              onClose={() => setIsMobileDateRangeOpen(false)}
               setFromDate={setFromDate}
               setToDate={setToDate}
               toDate={toDate}

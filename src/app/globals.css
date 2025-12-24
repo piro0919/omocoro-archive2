@@ -19,6 +19,7 @@
 }
 
 html {
+  scrollbar-width: thin;
   @media (width < 740px) {
     font-size: 56.25%;
   }
