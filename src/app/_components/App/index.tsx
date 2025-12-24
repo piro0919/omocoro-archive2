@@ -87,7 +87,11 @@ const getArticlesCountKey =
     });
   };
 
-export default function App(): React.JSX.Element {
+export type AppProps = Readonly<{
+  initialArticles: (Article & { category: Category; writers: Writer[] })[];
+}>;
+
+export default function App({ initialArticles }: AppProps): React.JSX.Element {
   const [category, setCategory] = useQueryState(
     "category",
     parseAsString
@@ -217,11 +221,12 @@ export default function App(): React.JSX.Element {
         </div>
       </div>
       <ul className={styles.list}>
-        {(
-          uniqueObjects(articles.flat(), ["url"]) as (Article & {
-            category: Category;
-            writers: Writer[];
-          })[]
+        {(articles.flat().length > 0
+          ? (uniqueObjects(articles.flat(), ["url"]) as (Article & {
+              category: Category;
+              writers: Writer[];
+            })[])
+          : initialArticles
         ).map((article) => (
           <li className={styles.item} key={article.id}>
             <a

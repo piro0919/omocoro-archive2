@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  IconCalendar,
+  IconArrowLeft,
   IconCategory,
   IconHome,
   IconPencil,
@@ -13,8 +13,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { parseAsString, useQueryState } from "nuqs";
+import { type RefObject, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { useBoolean, useOnClickOutside } from "usehooks-ts";
+import * as z from "zod";
 import styles from "./style.module.css";
 
 const schema = z.object({
@@ -31,12 +33,24 @@ export default function Header(): React.JSX.Element {
       .withDefault("")
       .withOptions({ history: "push", scroll: true }),
   );
-  const { handleSubmit, register } = useForm<Schema>({
+  const { handleSubmit, register, setValue } = useForm<Schema>({
     defaultValues: {
       keyword,
     },
     resolver: zodResolver(schema),
   });
+  const {
+    setFalse: offIsShowSearch,
+    setTrue: onIsShowSearch,
+    value: isShowSearch,
+  } = useBoolean(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setValue("keyword", keyword);
+  }, [keyword, setValue]);
+
+  useOnClickOutside(ref as RefObject<HTMLElement>, offIsShowSearch);
 
   return (
     <header className={styles.header}>
@@ -66,6 +80,12 @@ export default function Header(): React.JSX.Element {
             </div>
           </Link>
         </motion.div>
+        <button
+          className={styles.searchButton}
+          onClick={() => onIsShowSearch()}
+        >
+          <IconSearch size={24} />
+        </button>
         {pathname === "/" ? (
           <form
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -89,24 +109,16 @@ export default function Header(): React.JSX.Element {
                 disabled={!keyword}
                 type="button"
               >
-                <IconX size={18} />
+                <IconX size={21} />
               </button>
               <button className={styles.submitButton} type="submit">
-                <IconSearch size={18} />
+                <IconSearch size={24} />
               </button>
             </div>
           </form>
-        ) : null}
-        {pathname === "/" ? (
-          <div className={styles.buttons}>
-            <button className={styles.searchButton}>
-              <IconSearch size={21} />
-            </button>
-            <button>
-              <IconCalendar size={21} />
-            </button>
-          </div>
-        ) : null}
+        ) : (
+          <div className={styles.spacer} />
+        )}
         <nav className={styles.nav}>
           <Link
             className={`${styles.navLink} ${pathname === "/" ? styles.navLinkActive : ""}`}
@@ -137,6 +149,48 @@ export default function Header(): React.JSX.Element {
             <span className={styles.navLinkText}>設定</span>
           </Link>
         </nav>
+      </div>
+      <div
+        className={`${styles.mobileSearchContainer} ${isShowSearch ? styles.show : ""}`}
+        ref={ref}
+      >
+        <div className={styles.mobileSearchInner}>
+          <button
+            className={styles.closeButton}
+            onClick={() => offIsShowSearch()}
+          >
+            <IconArrowLeft size={24} />
+          </button>
+          <form
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={handleSubmit((data) => {
+              setKeyword(data.keyword.replace(/\s+/g, " ").trim());
+            })}
+            className={styles.form}
+          >
+            <div className={styles.searchContainer}>
+              <input
+                {...register("keyword")}
+                className={styles.searchInput}
+                placeholder="記事を検索"
+                type="text"
+              />
+              <button
+                onClick={() => {
+                  setKeyword("");
+                }}
+                className={styles.clearButton}
+                disabled={!keyword}
+                type="button"
+              >
+                <IconX size={21} />
+              </button>
+              <button className={styles.submitButton} type="submit">
+                <IconSearch size={24} />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </header>
   );

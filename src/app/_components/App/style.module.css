@@ -20,11 +20,14 @@
 
 .count {
   font-size: 1.4rem;
+  white-space: nowrap;
 }
 
 .buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: min(12px, 2dvw);
+  justify-content: flex-end;
 }
 
 .button {
@@ -95,10 +98,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: calc(min(12px, 2dvw) / 3);
-
-  @media (width <= 574px) {
-    display: none;
-  }
 }
 
 .category,

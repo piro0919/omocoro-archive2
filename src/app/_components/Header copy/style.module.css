@@ -1,22 +1,25 @@
 .header {
+  align-items: center;
   background: hsl(from var(--card) h s l);
   border-bottom: 1px solid hsl(from var(--border) h s l);
+  display: flex;
   height: 60px;
   position: relative;
 }
 
 .inner {
   align-items: center;
-  display: flex;
+  display: grid;
   gap: min(18px, 2dvw);
+  grid-template-columns: auto 1fr auto;
   height: 100%;
+  justify-items: flex-start;
   margin: 0 auto;
   padding: 0 min(24px, 4dvw) 0 min(12px, 2dvw);
-  position: relative;
   width: min(100%, 1280px);
 
   @media (width < 740px) {
-    justify-content: space-between;
+    grid-template-columns: 1fr auto;
   }
 }
 
@@ -26,7 +29,18 @@
   position: relative;
 }
 
-.form {
+.searchButton {
+  @media (width >= 980px) {
+    display: none;
+  }
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.inner .form,
+.inner .spacer {
   @media (width < 980px) {
     display: none;
   }
@@ -40,7 +54,11 @@
   font-size: 1.4rem;
   grid-template-columns: 1fr auto auto;
   overflow: hidden;
-  width: 280px;
+  width: 300px;
+
+  @media (width < 980px) {
+    width: 100%;
+  }
 }
 
 .searchInput {
@@ -48,9 +66,6 @@
 }
 
 .clearButton {
-  align-items: center;
-  display: flex;
-  justify-content: center;
   padding: 0 6px;
 }
 
@@ -59,33 +74,15 @@
 }
 
 .submitButton {
-  align-items: center;
   background: hsl(from var(--background) h s l);
   border-left: 1px solid hsl(from var(--border) h s l);
-  display: flex;
-  height: 100%;
-  justify-content: center;
   padding: 3px 12px;
-}
-
-.buttons {
-  display: flex;
-  gap: min(12px, 2dvw);
-}
-
-.searchButton {
-  @media (980px <= width) {
-    display: none;
-  }
 }
 
 .nav {
   display: flex;
   gap: min(18px, 2dvw);
-  height: 36px;
-  inset: auto 0 0 auto;
-  padding: 0 min(24px, 4dvw) 0 min(12px, 2dvw);
-  position: absolute;
+  height: 100%;
 
   @media (width < 740px) {
     display: none;
@@ -96,6 +93,7 @@
   align-items: center;
   display: flex;
   gap: 6px;
+  margin-top: 18px;
 }
 
 .navLinkActive {
@@ -118,4 +116,34 @@
 
 .navLinkText {
   font-size: 1.4rem;
+}
+
+.mobileSearchContainer {
+  background: hsl(from var(--card) h s l);
+  inset: 0;
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 250ms;
+
+  @media (width >= 980px) {
+    display: none;
+  }
+}
+
+.mobileSearchContainer.show {
+  transform: translateY(0);
+}
+
+.mobileSearchInner {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 min(24px, 4dvw) 0 min(12px, 2dvw);
+  width: min(100%, 1280px);
+}
+
+.mobileSearchInner .form {
+  width: 100%;
 }
