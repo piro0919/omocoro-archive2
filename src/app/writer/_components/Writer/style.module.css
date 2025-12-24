@@ -1,13 +1,35 @@
 .container {
+  display: grid;
+  gap: min(12px, 2dvw);
   margin: 0 auto;
   padding: min(12px, 2dvw);
   width: min(100%, 1280px);
 }
 
+.header {
+  align-items: center;
+  display: flex;
+  gap: min(12px, 2dvw);
+  justify-content: flex-end;
+}
+
+.button {
+  background: hsl(from var(--card) h s l);
+  border: 1px solid hsl(from var(--border) h s l);
+  border-radius: 6px;
+  font-size: 1.2rem;
+  padding: 6px 12px;
+}
+
+.button:disabled {
+  background: hsl(from var(--foreground) h s l);
+  color: hsl(from var(--background) h s l);
+}
+
 .list {
   display: grid;
   gap: min(12px, 2dvw);
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .link {
@@ -30,4 +52,11 @@
 .name {
   font-size: 1.4rem;
   line-height: 1.25;
+}
+
+.count {
+  color: hsl(from var(--foreground) h s l / 0.6);
+  font-size: 1.2rem;
+  margin-left: auto;
+  white-space: nowrap;
 }
