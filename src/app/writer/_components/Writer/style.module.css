@@ -9,8 +9,12 @@
 .header {
   align-items: center;
   display: flex;
+  justify-content: space-between;
+}
+
+.buttons {
+  display: flex;
   gap: min(12px, 2dvw);
-  justify-content: flex-end;
 }
 
 .button {

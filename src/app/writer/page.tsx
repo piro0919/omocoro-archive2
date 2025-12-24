@@ -29,5 +29,5 @@ const getWriters = async (): Promise<WriterWithCount[]> => {
 export default async function Page(): Promise<React.JSX.Element> {
   const writers = await getWriters();
 
-  return <WriterComponent writers={writers} />;
+  return <WriterComponent initialWriters={writers} />;
 }
