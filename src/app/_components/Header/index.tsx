@@ -280,11 +280,12 @@ export default function Header(): React.JSX.Element {
             initial="inactive"
             ref={ref2}
           >
-            {isMobileSearchOpen ? (
-              <FormProvider {...methods}>
-                <MobileSearch onClose={() => setIsMobileSearchOpen(false)} />
-              </FormProvider>
-            ) : null}
+            <FormProvider {...methods}>
+              <MobileSearch
+                isMobileSearchOpen={isMobileSearchOpen}
+                onClose={() => setIsMobileSearchOpen(false)}
+              />
+            </FormProvider>
           </motion.div>
         ) : null}
         {pathname === "/" ? (

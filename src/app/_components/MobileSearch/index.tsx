@@ -4,10 +4,12 @@ import { useFormContext } from "react-hook-form";
 import styles from "./style.module.css";
 
 export type MobileSearchProps = Readonly<{
+  isMobileSearchOpen: boolean;
   onClose: () => void;
 }>;
 
 export default function MobileSearch({
+  isMobileSearchOpen,
   onClose,
 }: MobileSearchProps): React.JSX.Element {
   const [keyword, setKeyword] = useQueryState(
@@ -32,7 +34,8 @@ export default function MobileSearch({
         >
           <div className={styles.searchContainer}>
             <input
-              {...register("keyword")}
+              // 二重登録を防ぐため、isMobileSearchOpenがfalseの場合はregisterを使用しない
+              {...(isMobileSearchOpen ? register("keyword") : {})}
               className={styles.searchInput}
               placeholder="記事を検索"
               type="text"
