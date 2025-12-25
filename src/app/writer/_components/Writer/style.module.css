@@ -33,7 +33,7 @@
 .list {
   display: grid;
   gap: min(12px, 2dvw);
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
 .link {
@@ -48,6 +48,7 @@
 .imageContainer {
   aspect-ratio: 1;
   border-radius: 50dvmax;
+  flex-shrink: 0;
   height: 42px;
   overflow: hidden;
   position: relative;
